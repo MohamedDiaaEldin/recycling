@@ -5,10 +5,11 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql.expression import false
 from sqlalchemy.sql.sqltypes import Date, Float, String , Time
-Base = declarative_base()
 
+Base = declarative_base()
 DATABASE_URL='postgresql://mohamed:123@127.0.0.1:5432/recycling'
-db = SQLAlchemy()
+db = SQLAlchemy() ## ORM
+
 def setup_db(app):
     print('database url ----->> ', DATABASE_URL)
     app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
@@ -18,28 +19,24 @@ def setup_db(app):
     db.create_all()
     return db
 
-# class Department(db.Model):    
-#     __tablename__ = 'department'
-#     id = Column(Integer, primary_key=True)
-#     customers = relationship("Employee")
-
-# class Employee(db.Model):
-#     id = Column(Integer, primary_key=True)
-#     username = Column(String, nullable=False)
-#     department_id = Column(Integer, ForeignKey('department.id'))
-
 
 class Customer(db.Model):
     __tablename__ = 'customer'
-    id = Column(Integer, primary_key=True)
+    ## fields
+    id = Column(Integer, primary_key=True) # outo increament
     name = Column(String, nullable=False)
     email = Column(String, nullable=False)
     password = Column(String, nullable=False)
     address = Column(String, nullable=False)
     points = Column(Float, nullable=False)
+    
     buy_orders = relationship("BuyOrder")
     sell_orders = relationship("SellOrder")
     waiting = relationship("WaitingCategory")
+
+    def __str__(self) :
+        return f'{self.id}, {self.name}'
+
     
 class WaitingCategory(db.Model):
     id = Column(Integer, primary_key=True)
@@ -47,8 +44,7 @@ class WaitingCategory(db.Model):
     matrial_id = Column(Integer, ForeignKey('matrial.id'))
     customer_id = Column(Integer, ForeignKey('customer.id'))
 '''
-NOTE 
-change to many to many between SellOrder and Delivery 
+NOTE  change to many to many between SellOrder and Delivery 
 '''
 class Delivery(db.Model):
     id = Column(Integer, primary_key=True)
@@ -56,7 +52,6 @@ class Delivery(db.Model):
     address = Column(String, nullable=False)
     phone = Column(String, nullable=False)
     orders = relationship("SellOrder")
-
 
 class SellOrder(db.Model):
     id = Column(Integer, primary_key=True)
@@ -70,7 +65,7 @@ class BuyOrder(db.Model):
     weight = Column(Float, nullable=False)
     date = Column(Date, nullable=False) ## string for now
     time = Column(Time, nullable=False) ## String for now
-    customer_id = Column(Integer, ForeignKey('customer.id'))
+    customer_id = Column(Integer, ForeignKey('customer.id')) 
     buy_orders = relationship("BuyCategoryMatrial")
 
 
@@ -90,9 +85,6 @@ class Matrial(db.Model):
     buy_orders = relationship("BuyCategoryMatrial")
     sell_orders = relationship("SellCategorymatrial")
     wating = relationship("WaitingCategory")
-
-    
-
 
 ## Store
 class MatrialCategory(db.Model):
