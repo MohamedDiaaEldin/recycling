@@ -55,7 +55,8 @@ def add_customer():
 
 
 def is_valid_login_data(body):
-    return not (body == None or 'email' not in body or 'password' not in body)
+    return not (body == None or 'email' not in body or 'password' not in body)\
+
 @app.route('/login', methods=['POST'])
 def login():
     body  = request.get_json()
@@ -85,4 +86,3 @@ def login():
             'status_code': 500 ,
             'message':'server error'
         })
-        
