@@ -2,20 +2,27 @@ const user_email = document.getElementById('email')
 const firstName = document.getElementById('first_name')
 const lastName = document.getElementById('last_name')
 const password = document.getElementById('password')
+const passwordConfirm = document.getElementById('password_confirm')
 const address = document.getElementById('address')
 const signBtn = document.getElementById('signBtn')
-
+const passwordConfirmFlag = false
 
 function isValidateUSerInput(customr){
+  // password confirmation 
+  if ( password.value !== passwordConfirm.value){
+    alert('make sure that you input the same password !')
+    return 
+  }
+  /// validate for null inputs
     for(const key in customr){
-        if (customr[key].length === 0){
+        if (customr[key].length === 0 ){          
             return false
         }
     }
     return true
 }
-const addCustomer = ()=>{
-    
+
+const addCustomer = ()=>{   
     customer = {
         name: firstName.value + " " + lastName.value,
         email: email.value,  
@@ -43,7 +50,7 @@ const addCustomer = ()=>{
           })
         .then(data => {                                              
             if (data.status_code === 200 ){
-                console.log('yes')
+                console.log('success')
                 window.location.href = "success_signup.html";            
             }            
         })

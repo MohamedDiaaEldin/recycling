@@ -13,13 +13,12 @@ cors = CORS(app, resources={r"/*": {"origins": "*"}})
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 
-
-@app.route("/")
-def hello_world():    
-    return jsonify({
-        'name':'ali',
-        'age':20
-    })
+# @app.route("/")
+# def hello_world():    
+#     return jsonify({
+#         'name':'ali',
+#         'age':20
+#     })
 
 
 def is_valid_user_data(body):

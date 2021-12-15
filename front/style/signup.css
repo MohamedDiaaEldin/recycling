@@ -8,7 +8,8 @@ body {
     flex-direction: column;
     align-items: center;
     font-size: 24px;
-    background-color: #dbdbdb;
+    /* background-color: #dbdbdb; */
+    background-color: #00b323;
 
 }
 
@@ -19,11 +20,12 @@ body {
 .container {
     flex-direction: column;
     border: 1px black solid;
-    width: 400px;
+    width: 40%;
     align-items: center;
-    margin-top: 10%;
-    padding: 30px;
-    background-color: #efefef;
+    margin-top: 5%;
+    
+    padding: 15 px;
+    background-color: white;
     border-radius: 10px;
 }
 
@@ -38,6 +40,8 @@ body {
 
 .container h1 {
     padding-top: 15%;
+    
+    color:green;
 }
 
 .container p {
@@ -50,30 +54,48 @@ body {
 }
 
 .container input {
-    margin-top: 20px;
+    margin-top: 2.5rem;
     padding-top: 10px;
     text-align: left;
-    font-size: 1.2rem;
-    border-style: solid;
+    font-size: 1.75rem;
+    border : .5px solid rgb(163, 159, 159) ;
     border-radius: 5px;
-    padding: 15px;
+    padding: 17px;    
 }
 
 .container a {
-    margin-top: 15%;
-    padding: 15px;
-    background-color: #151e60;
+    margin-top: 10%;
+    padding: 25px;
+    /* background-color: #151e60; */
+    background-color: rgb(26, 150, 26);
     text-decoration: none;
     font-size: 1.5rem;
-    border-radius: 5px;
+    border-radius: 10px;
     margin-bottom: 15%;
-    width: 75%;
+    width: 40%;
     color: white;
     text-align: center;
+    font-size: 1.90rem;
 }
 
 .container a:hover {
-    background-color: #394384;
+    background-color: green;
+}
+/* 950 */
+@media screen and (max-width: 990px) {
+    .container{
+        width: 70%;
+    }
+}
+
+/* 640 */
+@media screen and (max-width: 640px) {
+    .container{
+        width: 80%;
+    }
+    .container a {
+        font-size: 1.3rem;
+    }
 }
 
 /* 500 */
@@ -98,5 +120,6 @@ body {
 
     .container a {
         width: 65%;
+        font-size: 1.5rem;
     }
 }
