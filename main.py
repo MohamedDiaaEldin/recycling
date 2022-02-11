@@ -1,6 +1,5 @@
 from os import pipe
 from flask import Flask , jsonify , abort  , request , redirect , render_template
-from flask.typing import StatusCode
 from flask_migrate import Migrate
 from models import setup_db , Customer
 from flask_cors import CORS
@@ -21,12 +20,15 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 #     })
 
 
+
 def is_valid_user_data(body):
     return not (body != None and 'name' not in body or 'email' not in body or 'password' not in body or 'address' not in body)
+
 
 @app.route('/customer', methods=['POST'])
 def add_customer():
     body = request.get_json()
+    
     if not is_valid_user_data(body):
         return jsonify({
             'sucess':False,
@@ -54,21 +56,22 @@ def add_customer():
 
 
 def is_valid_login_data(body):
-    return not (body == None or 'email' not in body or 'password' not in body)\
+    return not (body == None or 'email' not in body or 'password' not in body)
 
 @app.route('/login', methods=['POST'])
+
 def login():
     body  = request.get_json()
     if not (is_valid_login_data(body)):
         return jsonify({
             'success' : False,
             'status_code':400,
-            'message' : "server error"
+            'message' : "server error",            
         })
     try:
-        users = Customer.query.filter_by(email=body.get('email')).all()        
+        users = Customer.query.filter_by(email=body.get('email')).all()   ## select from database     
         
-        if len(users) ==0 or users[0].password != body.get('password'):
+        if len(users) == 0 or users[0].password != body.get('password'):
             return jsonify({
                 'success' : False,
                 'status_sode': 401,

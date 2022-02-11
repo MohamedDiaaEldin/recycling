@@ -11,6 +11,8 @@ function isValidateUSerInput(customr){
     }
     return true
 }
+
+
 const addCustomer = ()=>{
     
     customer = {        

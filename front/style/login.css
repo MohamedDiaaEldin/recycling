@@ -17,7 +17,8 @@ body{
     background-color: white;    
     text-align: center;
     width: 40%;    
-    margin-top: 5%;            
+    margin-top: 5%;          
+    border : none;  
 }
 .container h1{
     color: #00B323;
@@ -64,6 +65,12 @@ hr{
 a:hover{
     text-decoration: none;
 }
+
+.container p{
+    margin-bottom: 10%;
+    font-size: 1.2rem;
+}
+/* 
 .signup{
     margin-top: 40px;
     flex-direction: column;
@@ -72,7 +79,7 @@ a:hover{
     width: 35%;     
     padding: 25px;   
     font-size: 1.2rem;
-}
+} */
 
 @media screen and (max-width: 1050px) {
     .container{

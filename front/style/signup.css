@@ -22,11 +22,11 @@ body {
     border: 1px black solid;
     width: 40%;
     align-items: center;
-    margin-top: 5%;
-    
+    margin-top: 5%;    
     padding: 15 px;
     background-color: white;
     border-radius: 10px;
+    border : none
 }
 
 .container * {
@@ -81,7 +81,7 @@ body {
 .container a:hover {
     background-color: green;
 }
-/* 950 */
+/* 990 */
 @media screen and (max-width: 990px) {
     .container{
         width: 70%;
@@ -98,7 +98,7 @@ body {
     }
 }
 
-/* 500 */
+/* 550 */
 @media screen and (max-width: 550px) {
     body {
         font-size: 18px;

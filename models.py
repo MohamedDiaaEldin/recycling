@@ -23,13 +23,12 @@ def setup_db(app):
 class Customer(db.Model):
     __tablename__ = 'customer'
     ## fields
-    id = Column(Integer, primary_key=True) # outo increament
+    id = Column(Integer, primary_key=True) # outo increment
     name = Column(String, nullable=False)
     email = Column(String, nullable=False)
     password = Column(String, nullable=False)
     address = Column(String, nullable=False)
-    points = Column(Float, nullable=False)
-    
+    points = Column(Float, nullable=False)    
     buy_orders = relationship("BuyOrder")
     sell_orders = relationship("SellOrder")
     waiting = relationship("WaitingCategory")
@@ -77,7 +76,6 @@ class Category(db.Model):
     sell_orders = relationship("SellCategorymatrial")
     
 
-
 class Matrial(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
@@ -95,6 +93,7 @@ class MatrialCategory(db.Model):
 
     matrial_id = Column(Integer, ForeignKey('matrial.id'))
     category_id = Column(Integer, ForeignKey('category.id'))
+    id = Column(Integer, primary_key=True)
 
 class BuyCategoryMatrial(db.Model):
     id = Column(Integer, primary_key=True)
