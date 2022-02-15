@@ -1,4 +1,3 @@
-from enum import Flag
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Table, Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
@@ -19,7 +18,10 @@ def setup_db(app):
     db.create_all()
     return db
 
-
+def add(obj):
+    db.session.add(obj)
+    db.session.commit()
+    
 class Customer(db.Model):
     __tablename__ = 'customer'
     ## fields
@@ -36,14 +38,21 @@ class Customer(db.Model):
     def __str__(self) :
         return f'{self.id}, {self.name}'
 
+    def add(self):
+        add(self)
     
 class WaitingCategory(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     matrial_id = Column(Integer, ForeignKey('matrial.id'))
     customer_id = Column(Integer, ForeignKey('customer.id'))
+
+
+    def add(self):
+        add(self)
+
 '''
-NOTE  change to many to many between SellOrder and Delivery 
+NOTE  change to many  Deto many between SellOrder andlivery 
 '''
 class Delivery(db.Model):
     id = Column(Integer, primary_key=True)
@@ -52,12 +61,22 @@ class Delivery(db.Model):
     phone = Column(String, nullable=False)
     orders = relationship("SellOrder")
 
+
+    def add(self):
+        add(self)
+
+
+
 class SellOrder(db.Model):
     id = Column(Integer, primary_key=True)
     weight = Column(Float, nullable=False)
     customer_id = Column(Integer, ForeignKey('customer.id'))
     delivery_id = Column(Integer, ForeignKey('delivery.id'))
     sell_orders = relationship("SellCategorymatrial")
+
+    def add(self):
+        add(self)
+
 
 class BuyOrder(db.Model):
     id = Column(Integer, primary_key=True)
@@ -67,6 +86,8 @@ class BuyOrder(db.Model):
     customer_id = Column(Integer, ForeignKey('customer.id')) 
     buy_orders = relationship("BuyCategoryMatrial")
 
+    def add(self):
+        add(self)
 
 class Category(db.Model):
     id = Column(Integer, primary_key=True)
@@ -74,6 +95,9 @@ class Category(db.Model):
     matrialCategories = relationship("MatrialCategory")
     buy_orders = relationship("BuyCategoryMatrial")
     sell_orders = relationship("SellCategorymatrial")
+
+    def add(self):
+        add(self)
     
 
 class Matrial(db.Model):
@@ -84,31 +108,39 @@ class Matrial(db.Model):
     sell_orders = relationship("SellCategorymatrial")
     wating = relationship("WaitingCategory")
 
+    def add(self):
+       add(self)
+
 ## Store
 class MatrialCategory(db.Model):
-    id = Column(Integer, primary_key=True)
+    matrial_id = Column(Integer, ForeignKey('matrial.id'),  primary_key=True)
+    category_id = Column(Integer, ForeignKey('category.id'),  primary_key=True)
     total_weight = Column(Float , nullable=False)
     km_price = Column(Float , nullable=False)
     km_points = Column(Float , nullable=False)
 
-    matrial_id = Column(Integer, ForeignKey('matrial.id'))
-    category_id = Column(Integer, ForeignKey('category.id'))
-    id = Column(Integer, primary_key=True)
+    def add(self):
+        add(self)
+
+
 
 class BuyCategoryMatrial(db.Model):
     id = Column(Integer, primary_key=True)
     weight = Column(Float, nullable=False)
     price =  Column(Float, nullable=False)
-
     matrial_id = Column(Integer, ForeignKey('matrial.id'))
     category_id = Column(Integer, ForeignKey('category.id'))
     buy_order_id = Column(Integer, ForeignKey('buy_order.id'))
 
-class SellCategorymatrial(db.Model):
-    id = Column(Integer, primary_key=True)
-    weight = Column(Float, nullable=False)
-    price =  Column(Float, nullable=False)
+    def add(self):
+        add(self)
 
-    matrial_id = Column(Integer, ForeignKey('matrial.id'))
-    category_id = Column(Integer, ForeignKey('category.id'))
-    sell_order_id = Column(Integer, ForeignKey('sell_order.id'))
+class SellCategorymatrial(db.Model):
+    matrial_id = Column(Integer, ForeignKey('matrial.id'), primary_key=True)
+    category_id = Column(Integer, ForeignKey('category.id'),primary_key=True)
+    sell_order_id = Column(Integer, ForeignKey('sell_order.id'), primary_key=True)
+    weight = Column(Float, nullable=False)
+    price =  Column(Float, nullable=False)  
+
+    def add(self):
+        add(self)

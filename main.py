@@ -1,7 +1,7 @@
 from os import pipe
 from flask import Flask , jsonify , abort  , request , redirect , render_template
 from flask_migrate import Migrate
-from models import setup_db , Customer
+from models import setup_db , Customer , Matrial, Category , MatrialCategory, WaitingCategory , SellOrder, SellCategorymatrial, Delivery
 from flask_cors import CORS
 
 
@@ -28,7 +28,7 @@ def is_valid_user_data(body):
 @app.route('/customer', methods=['POST'])
 def add_customer():
     body = request.get_json()
-    
+
     if not is_valid_user_data(body):
         return jsonify({
             'sucess':False,
@@ -88,3 +88,6 @@ def login():
             'status_code': 500 ,
             'message':'server error'
         })
+
+if __name__ == '__main__':
+    app.run()
