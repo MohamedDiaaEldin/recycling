@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql.expression import false
 from sqlalchemy.sql.sqltypes import Date, Float, String , Time
-
+import json
 Base = declarative_base()
 DATABASE_URL='postgresql://mohamed:123@127.0.0.1:5432/recycling'
 db = SQLAlchemy() ## ORM
@@ -61,7 +61,6 @@ class Delivery(db.Model):
     phone = Column(String, nullable=False)
     orders = relationship("SellOrder")
 
-
     def add(self):
         add(self)
 
@@ -96,9 +95,14 @@ class Category(db.Model):
     buy_orders = relationship("BuyCategoryMatrial")
     sell_orders = relationship("SellCategorymatrial")
 
+    def get_category(self) :
+        return {
+            'id' : self.id, 
+            'name' : self.name
+        }
     def add(self):
         add(self)
-    
+
 
 class Matrial(db.Model):
     id = Column(Integer, primary_key=True)
@@ -107,6 +111,12 @@ class Matrial(db.Model):
     buy_orders = relationship("BuyCategoryMatrial")
     sell_orders = relationship("SellCategorymatrial")
     wating = relationship("WaitingCategory")
+
+    def get_matrial(self) :
+        return {
+            'id' : self.id, 
+            'name' : self.name
+        }
 
     def add(self):
        add(self)
@@ -119,18 +129,19 @@ class MatrialCategory(db.Model):
     km_price = Column(Float , nullable=False)
     km_points = Column(Float , nullable=False)
 
+  
     def add(self):
         add(self)
 
 
 
 class BuyCategoryMatrial(db.Model):
-    id = Column(Integer, primary_key=True)
+    matrial_id = Column(Integer,  ForeignKey('matrial.id'), primary_key=True)
+    category_id = Column(Integer, ForeignKey('category.id'), primary_key=True)
+    buy_order_id = Column(Integer, ForeignKey('buy_order.id'), primary_key=True)
     weight = Column(Float, nullable=False)
     price =  Column(Float, nullable=False)
-    matrial_id = Column(Integer, ForeignKey('matrial.id'))
-    category_id = Column(Integer, ForeignKey('category.id'))
-    buy_order_id = Column(Integer, ForeignKey('buy_order.id'))
+    
 
     def add(self):
         add(self)

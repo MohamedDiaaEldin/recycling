@@ -1,9 +1,10 @@
 from os import pipe
 from flask import Flask , jsonify , abort  , request , redirect , render_template
 from flask_migrate import Migrate
+from sqlalchemy import JSON
 from models import setup_db , Customer , Matrial, Category , MatrialCategory, WaitingCategory , SellOrder, SellCategorymatrial, Delivery
 from flask_cors import CORS
-
+import json
 
 app = Flask(__name__)
 db = setup_db(app)
@@ -59,7 +60,6 @@ def is_valid_login_data(body):
     return not (body == None or 'email' not in body or 'password' not in body)
 
 @app.route('/login', methods=['POST'])
-
 def login():
     body  = request.get_json()
     if not (is_valid_login_data(body)):
@@ -88,6 +88,51 @@ def login():
             'status_code': 500 ,
             'message':'server error'
         })
+
+
+def build_matrials(matrials):
+    list = []
+    for matrial in matrials:
+        list.append(matrial.get_matrial())    
+    return list
+
+@app.route('/matrials', methods=['GET'])
+def get_matrial():
+    try:
+        matrials = build_matrials(Matrial.query.all())
+        return jsonify({
+            'matrials' : matrials, 
+            'length': len(matrials)
+        })
+    except:
+        print('error geting matrials')
+        return jsonify({
+            'status_code': 500 ,
+            'message':'server error'
+        })
+        
+
+def build_categories(categories):
+    list = []
+    for category in categories:
+        list.append(category.get_category())    
+    return list
+
+@app.route('/categories', methods=['GET'])
+def get_categories():
+    try:
+        categories = build_categories(Category.query.all())
+        return jsonify({
+            'categories' : categories, 
+            'length': len(categories)
+        })
+    except:
+        print('error while getting categories')
+        return jsonify({
+            'status_code': 500 ,
+            'message':'server error'
+        })
+        
 
 if __name__ == '__main__':
     app.run()
