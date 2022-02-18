@@ -20,12 +20,11 @@ or
       'message' :' unauthorized user'
     }
 
-- /matrials GET 
 
+- /matrials GET 
 
 - /categories GET
 
-
-
 - /logout POST 
 
+- /orders/<int:id>
