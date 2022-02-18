@@ -35,6 +35,12 @@ class Customer(db.Model):
     sell_orders = relationship("SellOrder")
     waiting = relationship("WaitingCategory")
 
+    @staticmethod
+    def is_valid_login_data(body):
+        return not (body == None or 'email' not in body or 'password' not in body)
+    @staticmethod
+    def is_valid_customer_data(body):
+        return not (body != None and 'name' not in body or 'email' not in body or 'password' not in body or 'address' not in body)
     def __str__(self) :
         return f'{self.id}, {self.name}'
 
@@ -95,6 +101,16 @@ class Category(db.Model):
     buy_orders = relationship("BuyCategoryMatrial")
     sell_orders = relationship("SellCategorymatrial")
 
+    @staticmethod
+    def get_json_categories(categories):
+        list = []
+        for category in categories:
+            list.append(category.get_category())    
+        return {
+            'categories' : list, 
+            'length': len(list)
+            }
+
     def get_category(self) :
         return {
             'id' : self.id, 
@@ -112,6 +128,16 @@ class Matrial(db.Model):
     sell_orders = relationship("SellCategorymatrial")
     wating = relationship("WaitingCategory")
 
+    @staticmethod
+    def get_json_matrials(matrials):
+        list = []
+        for matrial in matrials:
+            list.append(matrial.get_matrial())            
+        return {
+            'matrials' : list, 
+            'length': len(list)
+        }
+        
     def get_matrial(self) :
         return {
             'id' : self.id, 
