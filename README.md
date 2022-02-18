@@ -15,26 +15,28 @@
 
 
   - ## End Points 
-    - customer POST 
-      <pre> returns {
-                'status_code' :200 ,
-                'success': True
-            }
+    - customer POST       
+      <pre>           
+          returns {
+                    'status_code' :200 ,
+                    'success': True
+                  }
       </pre>
 
-    - login POST 
-     <pre>
-            returns {
-                        'success': True,
-                        'status_code' : 200
-                    }
+    - login POST       
+      <pre>
+
+          returns {
+                    'success': True,
+                    'status_code' : 200
+                  }
             or 
-                {
-                  'success' : False,
-                  'status_sode': 401,
-                  'message' :' unauthorized user'
-                } 
-    </pre>
+                  {
+                    'success' : False,
+                    'status_sode': 401,
+                    'message' :' unauthorized user'
+                 } 
+      </pre> 
 
     - /matrials GET 
 
