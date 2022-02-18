@@ -1,4 +1,10 @@
-End Points 
+Figma front design https://www.figma.com/file/9S59KDhNeIwBXwabEw0300/recycling?node-id=0%3A1
+
+
+
+
+
+Backend End Points 
 
 
 - customer POST 
