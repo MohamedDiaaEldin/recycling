@@ -1,12 +1,19 @@
-Figma front design https://www.figma.com/file/9S59KDhNeIwBXwabEw0300/recycling?node-id=0%3A1
+# FrontEnd
+  ## tools 
+  - HTML
+  - CSS 
+  - javaScript
+Figma front Design https://www.figma.com/file/9S59KDhNeIwBXwabEw0300/recycling?node-id=0%3A1
 
 
 
 
-
-Backend End Points 
-
-
+# Backend
+  ## tools 
+  - Flask - SqlAlchemy - flask migrate
+  - Postgress Database
+  
+  ## End Points 
 - customer POST 
   it returns {
             'status_code' :200 ,
