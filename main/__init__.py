@@ -32,14 +32,13 @@ def add_customer():
 
 @app.route('/login', methods=['POST'])
 def login():
-    body  = request.get_json()
+    body  = request.get_json() # extract json data 
     if not (Customer.is_valid_login_data(body)):
-        return bad_request_handler()
-    
-    try:
-        users = Customer.query.filter_by(email=body.get('email')).all()   ## select from database             
-        if len(users) == 0 or users[0].password != body.get('password'):
-            return unauthorized_user_handler()
+        return bad_request_handler()    
+    try:        
+        users = Customer.query.filter_by(email=body.get('email')).all() # query database
+        if not Customer.is_valid_credentials(users, body):
+                return unauthorized_user_handler()
         
         return success_request_handler()
     except:
@@ -51,7 +50,8 @@ def login():
 @app.route('/matrials', methods=['GET'])
 def get_matrial():
     try:        
-        return jsonify(Matrial.get_json_matrials(Matrial.query.all()))
+        matrials = Matrial.query.all() # query database
+        return Matrial.get_json_matrials(matrials)
     except:
         print('error geting matrials')
         return server_error_handler()
@@ -60,7 +60,8 @@ def get_matrial():
 @app.route('/categories', methods=['GET'])
 def get_categories():
     try:        
-        return jsonify( Category.get_json_categories(Category.query.all()))
+        categories = Category.query.all() # query database
+        return Category.get_json_categories(categories)
     except:
         print('error while getting categories')
         return server_error_handler

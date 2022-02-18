@@ -1,10 +1,11 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Table, Column, Integer, ForeignKey
+from sqlalchemy import  Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.sql.expression import false
 from sqlalchemy.sql.sqltypes import Date, Float, String , Time
-import json
+from flask import jsonify
+
+
 Base = declarative_base()
 DATABASE_URL='postgresql://mohamed:123@127.0.0.1:5432/recycling'
 db = SQLAlchemy() ## ORM
@@ -36,6 +37,9 @@ class Customer(db.Model):
     waiting = relationship("WaitingCategory")
 
     @staticmethod
+    def is_valid_credentials(users, body):
+        return not (len(users) == 0 or users[0].password != body.get('password'))
+    @staticmethod
     def is_valid_login_data(body):
         return not (body == None or 'email' not in body or 'password' not in body)
     @staticmethod
@@ -52,7 +56,6 @@ class WaitingCategory(db.Model):
     name = Column(String, nullable=False)
     matrial_id = Column(Integer, ForeignKey('matrial.id'))
     customer_id = Column(Integer, ForeignKey('customer.id'))
-
 
     def add(self):
         add(self)
@@ -106,10 +109,10 @@ class Category(db.Model):
         list = []
         for category in categories:
             list.append(category.get_category())    
-        return {
+        return jsonify({
             'categories' : list, 
             'length': len(list)
-            }
+            })
 
     def get_category(self) :
         return {
@@ -133,10 +136,10 @@ class Matrial(db.Model):
         list = []
         for matrial in matrials:
             list.append(matrial.get_matrial())            
-        return {
+        return jsonify({
             'matrials' : list, 
             'length': len(list)
-        }
+        })
         
     def get_matrial(self) :
         return {
