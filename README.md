@@ -15,7 +15,7 @@
 
 
   - ## End Points 
-    - customer POST       
+    - /customer POST       
       <pre>           
           returns {
                     'status_code' :200 ,
@@ -23,9 +23,9 @@
                   }
       </pre>
 
-    - login POST       
+    - /login POST       
       <pre>
-
+                   
           returns {
                     'success': True,
                     'status_code' : 200
