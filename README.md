@@ -15,11 +15,12 @@
 
 
   - ## End Points 
-    - customer POST 
-      <pre> returns {
-                'status_code' :200 ,
-                'success': True
-            }
+    
+      <pre> - customer POST 
+                returns {
+                  'status_code' :200 ,
+                  'success': True
+                } 
       </pre>
 
     - login POST 
