@@ -9,11 +9,13 @@ Figma front Design https://www.figma.com/file/9S59KDhNeIwBXwabEw0300/recycling?n
 
 
 # Backend
-  ## tools 
+<pre>
+## tools 
   - Flask - SqlAlchemy - flask migrate
   - Postgress Database
-  
-  ## End Points 
+
+
+## End Points 
 - customer POST 
   it returns {
             'status_code' :200 ,
@@ -40,4 +42,7 @@ or
 
 - /logout POST 
 
-- /orders/<int:id>
+- /orders/<int:id> 
+</pre>
+  
+ 
