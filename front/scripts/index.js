@@ -43,28 +43,48 @@ aboutUs.addEventListener('click', aboutUsClickHandler)
 
 // how it works
 
-const buyer = document.getElementById('buyer')
-const seller = document.getElementById('seller')
-let selectedWorks = seller
+const buyerBtn = document.getElementById('buyerBtn')
+const sellerBtn = document.getElementById('sellerBtn')
+const sellerTemplate = document.getElementById('sellerTemplate').content.cloneNode(true)
+const buyerTemplate = document.getElementById('buyerTemplate').content.cloneNode(true)
+const howItWorksSection = document.querySelector('.how-it-works')
+let selectedWorks = sellerBtn
 
-const exchangeHowItWorks =  (new_selected)=>{
+// set seller to be first displayed
+let lastAdded = sellerTemplate
+howItWorksSection.appendChild(document.getElementById('sellerTemplate').content.cloneNode(true))     
+
+const exchangeColorHowItWorks =  (new_selected)=>{
     selectedWorks.style.color= "black"
     selectedWorks = new_selected
     selectedWorks.style.color= "green"
 }
-exchangeHowItWorks(seller)
+
+
+const sellerClickHandler= ()=>{
+    exchangeColorHowItWorks(sellerBtn)        
+    if (lastAdded == buyerTemplate){
+        const added  = document.getElementById('buyer-how-it-works')
+        howItWorksSection.removeChild(added)
+        howItWorksSection.appendChild(document.getElementById('sellerTemplate').content.cloneNode(true))     
+    }       
+
+    window.scrollBy(0, 300);
+    lastAdded = sellerTemplate
+}
+sellerBtn.addEventListener('click', sellerClickHandler)
+
+sellerBtn.click()
 
 const buyerClickHandler = ()=>{
-    exchangeHowItWorks(buyer)
-    document.getElementById('buyer-div').hidden = true
+    exchangeColorHowItWorks(buyerBtn)            
+    if (lastAdded == sellerTemplate){
+        const added  = document.getElementById('seller-how-it-works')                
+        howItWorksSection.removeChild(added)        
+        howItWorksSection.appendChild(document.getElementById('buyerTemplate').content.cloneNode(true))            
+    }   
+
+    lastAdded = buyerTemplate 
+    window.scrollBy(0, 300);
 }
-buyer.addEventListener('click', buyerClickHandler)
-
-
-const sellerClickHandler = ()=>{
-    exchangeHowItWorks(seller)
-    document.getElementById('buyer-div').hidden = false
-}
-seller.addEventListener('click', sellerClickHandler)
-
-
+buyerBtn.addEventListener('click', buyerClickHandler)
