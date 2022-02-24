@@ -117,3 +117,41 @@ body {
 .modal-content .verify button {
     padding: 10px;
 }
+
+@media screen and (max-width: 950px) {
+  .signup{
+    width: 80%  ;
+    font-size: .9em;
+  }
+  .signup .input-field{
+    width: 80%;
+  }
+  .modal-content{
+    width: 70%;
+  }
+}
+
+@media screen and (max-width: 490px) {
+  .signup{
+    width: 100%  ;
+    height: 100;
+    font-size: .9em;
+  }
+  .signup .input-field{
+    width: 60%;
+  }
+
+  .modal-content{
+    width: 75%;
+  }  
+}
+
+@media screen and (max-width: 300px) {
+.modal-content{
+  font-size: .7em;
+}
+#verifyBtn{
+  width: 75px;  
+  padding: 10px;
+}
+}
