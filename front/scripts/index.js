@@ -8,8 +8,7 @@ const aboutUs = document.getElementById('about')
 
 let active = home
 
-const homeHTML = document.getElementById('homeDEV')
-
+const homeHTML = document.getElementById('homePage')
 
 const exchange =  (new_active)=>{
     active.style.color= "black"
@@ -25,6 +24,7 @@ const homeClickHandler = ()=> {
 const ordersClickHandler = ()=> {  
     exchange(orders)
     homeHTML.hidden = true
+
 }
 const howItWorksClickHandler = ()=> {  
     exchange(howItWorks)
@@ -67,9 +67,7 @@ const sellerClickHandler= ()=>{
         const added  = document.getElementById('buyer-how-it-works')
         howItWorksSection.removeChild(added)
         howItWorksSection.appendChild(document.getElementById('sellerTemplate').content.cloneNode(true))     
-    }       
-
-    window.scrollBy(0, 300);
+    }           
     lastAdded = sellerTemplate
 }
 sellerBtn.addEventListener('click', sellerClickHandler)
@@ -85,6 +83,8 @@ const buyerClickHandler = ()=>{
     }   
 
     lastAdded = buyerTemplate 
-    window.scrollBy(0, 300);
 }
 buyerBtn.addEventListener('click', buyerClickHandler)
+
+
+

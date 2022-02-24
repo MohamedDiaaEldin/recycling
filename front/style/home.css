@@ -6,19 +6,44 @@
   font-family: "Roboto Slab", serif;
   font-weight: 200;
 }
+
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background-color: #faf6ed;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  display: flex;    
+  flex-direction: column;
+}
+
 header {
-  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
   background-color: #d8d2c9;
-  height: 100px;
 }
-.logo img {
-  width: 150px;
+header ul {
+  list-style-type: none ;
 }
-
+header ul li{
+  display: inline-block;
+  padding: 20px 10px;
+}
+.logo {
+  /* width: 10%; */
+  margin-left: 2%;
+  height: 50px;
+}
+.menu {
+  /* width: 80%; */
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
 .menu a {
   margin: 25px;
   color: black;
@@ -27,35 +52,26 @@ header {
 .menu a:hover {
   color: #076b23;
 }
-.active_color {
-  color: #076b23;
+
+.menu-line{
+  width: 20px;
+  height: 3px;
+  background-color: #02ec88;
+  margin-bottom: 4px;
 }
-.clicked {
-  color: red;
-}
-.login {
-  width: 150px;
-}
-.login a {
+
+.menu .login {
   text-decoration: none;
-  font-style: bold;
-  font-size: 1.2rem;
+  font-weight: 500;
+  font-size: 1.2em;
   padding: 15px 40px;
   color: white;
   border-radius: 7px;
   background-color: #076b23;
+  text-align: center;
+  width: 5%;
+  margin-right: 10px;
 }
-
-.login a:active {
-  color: red;
-}
-
-.login a[tabindex]:focus {
-  color: red;
-  outline: none;
-}
-
-/*  */
 
 .site-details {
   display: flex;
@@ -92,78 +108,240 @@ header {
   margin-right: 5px;
 }
 
-
-.images{
-    display: flex;
-    height: 1200px;
-    flex-direction: row;
-    justify-content: center;
-    background-image: url('../images/green.png');
-    background-size: cover;
-     
-}
-#homeDEV{
-    height: 1000px;
-    background-image: url('../images/green.png');
-    background-size: cover;
-    /* background-position: center; */
-}
-
-.how-it-works{
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    margin-top: 100px;
-    color: #02ec88;
-    font-size: 1.7rem;
-}
-.buyer-seller{
-    margin-top: 40px;
-}
-.buyer-seller a{
-    text-decoration: none;    
-    background-color: #C4C4C4 ;
-    padding: 10px;
-    color: black;
-    margin-left: 10px;
-}
-.buyer{
-    border-top-left-radius: 15px;
-    border-bottom-left-radius: 15px;
-}
-.seller{
-    border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px;
+/* .images {
+  display: flex;
+  height: 1200px;
+  flex-direction: row;
+  justify-content: center;
+  background-image: url("../images/green.png");
+  background-size: cover;
+} */
+#homeDEV {
+  height: 1000px;
+  background-image: url("../images/green.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
-#seller-how-it-works{
-  display: flex;  
+.how-it-works {
+  display: flex;
   flex-direction: column;
-  flex-wrap: wrap;  
+  text-align: center;
+  margin-top: 100px;
+  color: #02ec88;
+  font-size: 1.8em;
+}
+.buyer-seller {
+  margin-top: 40px;
+}
+.buyer-seller a {
+  text-decoration: none;
+  background-color: #c4c4c4;
+  padding: 10px;
+  color: black;
+  margin-left: 10px;
+}
+.buyer {
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+}
+.seller {
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+}
+
+#seller-how-it-works {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
   margin-top: 50px;
 }
-.row-info{  
+.row-info {
   display: flex;
   flex-direction: row;
-  justify-content: center;  
+  justify-content: center;
   text-align: left;
   gap: 20px;
 }
-.row-info div{
-    width: 30%;
+.row-info div {
+  width: 30%;
 }
-.fa-solid{
+.fa-solid {
   font-size: 1.3em;
 }
 
-.row-info h3{
+.row-info h3 {
   color: black;
   font-weight: 400;
 }
 
-.row-info p{
+.row-info p {
   padding: 10px;
   color: black;
   font-weight: 50;
-  font-size: .8em;
+  font-size: 0.8em;
 }
+
+/* about us  */
+
+#aboutSection {
+  display: flex;
+  flex-direction: row;
+  margin-top: 50px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+#aboutSection pre {
+  font-size: 1.8em;
+  padding: 30px;
+  margin-top: 10px;
+  /* display: block; */
+  width: 40%;
+  /* pre wrap  */
+  white-space: pre-wrap; /* Since CSS 2.1 */
+  white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+  white-space: -pre-wrap; /* Opera 4-6 */
+  white-space: -o-pre-wrap; /* Opera 7 */
+  word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
+#aboutSection .greentext {
+  color: green;
+}
+
+.about-us {
+  text-align: center;
+  margin-top: 70px;
+  color: #02ec88;
+  font-size: 2.8em;
+}
+
+/* footer */
+
+footer {
+  height: 500px;
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.letTalk {
+  height: 400px;
+  background-color: #c0bdbd;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.leftTalk h2 {
+  font-size: 2em;
+  color: white;
+  padding: 30px;
+  margin-top: 30px;
+}
+.leftTalk pre {
+  font-size: 1.2em;
+  color: white;
+  padding-left: 30px;
+}
+.rightTalk {
+  /* width: 40%; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+}
+.cop-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  /* gap:10px; */
+}
+.cop-info p {
+  color: white;
+  font-weight: 400;
+  padding: 15px;
+  margin-left: 20px;
+}
+
+.social {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 100px;
+}
+.social img {
+  width: 30px;
+  height: 30px;
+}
+
+.copyright {
+  background-color: #16ae40;
+  height: 100px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 730 or less*/
+@media screen and (max-width: 730px) {
+  header{
+    justify-content: space-around ;
+  }
+  #homeDEV{
+    background-image: url('../images/al.jpg');
+    height: 200px;
+  }
+ 
+  #home{
+    display: none;
+  }
+  #howItWorks{
+    display: none;
+  }
+  #about{
+    display: none;
+  }
+  .menu .login{
+    width: 25px;
+    height: 50%;
+  }
+
+  header .logo{
+    justify-self: left;
+  }
+
+  /*  */
+  #howItWorksSection a{
+    font-size: .6em;
+  }
+  .row-info{
+    justify-content: space-around ;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+  .row-info div h3{
+    font-size: .6em;
+  }
+  .row-info div p{
+    font-size: .4em;
+  }
+  
+  .leftTalk h2{
+    margin-top: 3px;
+  }
+  .rightTalk{
+    flex-direction: column;
+    justify-content: left;
+  }
+ 
+  
+}
+
