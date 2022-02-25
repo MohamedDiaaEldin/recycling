@@ -1,0 +1,129 @@
+html{
+    padding: 0;
+    margin: 0;
+}
+
+body{
+    display: flex;
+    flex-direction: column;    
+    align-items: center;   
+    background-color: #02ec88;     
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.login-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    height: 600px;
+    width: 40%;
+    margin-top: 5%;
+    border-radius: 10px;
+
+}
+.login-container h1{
+    margin-top: 8%;
+    color: #02ec88;
+    font-size: 2.7em;    
+}
+
+.login-container input{
+    padding: 10px;
+    font-size: 1.2em;
+    margin-top: 20px;
+    width: 50%;
+}
+
+.error{
+    color:red;
+    font-size: 1em;
+}
+.login-container hr{
+    width: 70%;
+    margin-top: 70px;
+}
+
+.login-container button{
+    margin-top: 30px;
+    padding: 15px;
+    width: 150px;
+    font-size: 1em;
+    color: white;
+    font-weight: 600;
+    background-color: #02ec88;
+    border-style: none;
+    border-radius: 5px;
+}
+.login-container button:hover{
+    background-color: #2ad189;
+}
+
+.login-container #forgetBtn{
+    text-decoration: none;
+    margin-top: 60px;
+    color: black;
+}
+.login-container #forgetBtn:hover{
+    color: #02ec88;
+}
+.signup{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;    
+    margin-top: 20px;
+}
+.signup a{
+    margin-left: 15px;
+    padding: 10px;
+    font-size: 1.3em;
+    text-decoration: none; 
+    color:black;
+}
+
+.signup a:hover{
+    color: #02ec88;
+}
+
+
+/* responsive  */
+
+@media screen and (max-width: 1000px) {
+    .login-container{
+        width: 60%;
+    }
+}
+
+
+@media screen and (max-width: 750px) {
+    .login-container{
+        width: 75%;
+    }
+    .login-container input{
+        font-size: 1.1em;
+        padding: 8px;
+    }
+
+    .signup a{
+        font-size: 1.1em;
+    }
+}
+
+
+
+@media screen and (max-width: 550px) {
+    .login-container{
+        width: 95%;
+    }
+    .login-container input{
+        font-size: 1em;
+    }
+
+    .login-container button{
+        width: 100px;   
+    }
+    .signup p{
+        font-size: .9em;
+    }
+}

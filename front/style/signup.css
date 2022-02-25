@@ -26,6 +26,11 @@ body {
   font-size: 2.7em;
   color: #02ec88;
 }
+.error{
+  color: red;
+  text-align: center;
+  font-size: 1em;
+}
 .signup hr {
   width: 70%;
 }

@@ -155,7 +155,7 @@ header ul li{
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  margin-top: 50px;
+  margin-top: 100px;
 }
 .row-info {
   display: flex;

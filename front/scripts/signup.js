@@ -39,6 +39,14 @@ function isValidateUSerInput(customer) {
   return errorMessage;
 }
 
+
+const buildEmptyFields = (emptyFields)=>{
+  let formattedEmpty = ""
+  for(field of emptyFields){
+    formattedEmpty += field +" \n"
+  }
+  return formattedEmpty
+}
 const addCustomer = () => {
   customer = {
     firstName: firstName.value,
@@ -50,10 +58,10 @@ const addCustomer = () => {
     password_confirm: passwordConfirm.value,
   };
   const validation = isValidateUSerInput(customer);
-  let errorMessage = "error message: ";
+  let errorMessage = "error : ";
   let error = true;
   if (validation.emptyValidation) {
-    errorMessage += "empty fields " + validation.empty.toString();
+    errorMessage += "empty fields \n" + buildEmptyFields(validation.empty) ;
   } else if (validation.passwordLength === false) {
     errorMessage += "the password length must be at least 8 characters";
   } else if (validation.passwordConfirmation === false) {
@@ -61,10 +69,14 @@ const addCustomer = () => {
   } else {
     error = false; // there no error
   }
+  const errorElement = document.querySelector('.error')
   if (error) {
-    alert(errorMessage);
+    console.log(errorMessage)
+    errorElement.textContent = errorMessage
+    // alert(errorMessage);
   } else {
-    console.log("it's ok");
+    errorElement.textContent = ""
+    // console.log("it's ok");
 
     displayEmailPOp(customer.email)
     /// get the model and display it 
