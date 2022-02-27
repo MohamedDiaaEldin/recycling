@@ -164,5 +164,6 @@ def get_categories():
         return server_error_handler
         
 
+        
 if __name__ == '__main__':
     app.run()

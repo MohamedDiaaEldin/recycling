@@ -46,12 +46,12 @@
            "email" : "example.com"
          }
          - sucess response 
-         {
+         
             {
                     'success': True,
                     'status_code' : 200
             }
-         }
+         
       </pre>
 
 
@@ -65,12 +65,12 @@
                }
 
         - sucess response 
-         {
+         
             {
                     'success': True,
                     'status_code' : 200
             }
-         }
+         
           
         -wrong otp response 
           {
