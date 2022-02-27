@@ -5,15 +5,15 @@ const home = document.getElementById('home')
 const orders = document.getElementById('orders')
 const howItWorks = document.getElementById('howItWorks')
 const aboutUs = document.getElementById('about')
+const loginBtn = document.getElementById('loginBtn')
 
-let active = home
-
+let activeMenueElement = home
 const homeHTML = document.getElementById('homePage')
 
 const exchange =  (new_active)=>{
-    active.style.color= "black"
-    active = new_active
-    active.style.color= "#02EC88"
+    activeMenueElement.style.color= "black"
+    activeMenueElement = new_active
+    activeMenueElement.style.color= "#02EC88"
 }
 
 const homeClickHandler = ()=> {    
@@ -42,7 +42,6 @@ aboutUs.addEventListener('click', aboutUsClickHandler)
 
 
 // how it works
-
 const buyerBtn = document.getElementById('buyerBtn')
 const sellerBtn = document.getElementById('sellerBtn')
 const sellerTemplate = document.getElementById('sellerTemplate').content.cloneNode(true)
@@ -54,13 +53,14 @@ let selectedWorks = sellerBtn
 let lastAdded = sellerTemplate
 howItWorksSection.appendChild(document.getElementById('sellerTemplate').content.cloneNode(true))     
 
+// change color buyer and seller colors
 const exchangeColorHowItWorks =  (new_selected)=>{
     selectedWorks.style.color= "black"
     selectedWorks = new_selected
     selectedWorks.style.color= "green"
 }
 
-
+//// handel seller click - how it works
 const sellerClickHandler= ()=>{
     exchangeColorHowItWorks(sellerBtn)        
     if (lastAdded == buyerTemplate){
@@ -74,6 +74,7 @@ sellerBtn.addEventListener('click', sellerClickHandler)
 
 sellerBtn.click()
 
+//// handel buyer click - how it works
 const buyerClickHandler = ()=>{
     exchangeColorHowItWorks(buyerBtn)            
     if (lastAdded == sellerTemplate){
@@ -88,3 +89,9 @@ buyerBtn.addEventListener('click', buyerClickHandler)
 
 
 
+//  handel login button 
+
+const loginClickHandler = ()=>{
+    window.location.href = "login.html"
+}
+loginBtn.addEventListener('click', loginClickHandler)

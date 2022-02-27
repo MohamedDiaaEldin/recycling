@@ -22,7 +22,30 @@ def setup_db(app):
 def add(obj):
     db.session.add(obj)
     db.session.commit()
-    
+
+
+
+class Customer_OTP(db.Model):
+    __tablename__ = 'customer_otp'
+    email = Column(String, primary_key=True)
+    otp = Column(String, nullable=False)
+
+    def add(self):
+        add(self)
+
+    def commit_changes(self):
+        db.session.commit()
+
+    @staticmethod
+    def is_valid_request_data(body):
+        return body != None and 'email' in body 
+
+    @staticmethod
+    def is_valid_otp_request_data(body):
+        return body != None and 'email' in body and 'otp' in body 
+
+
+
 class Customer(db.Model):
     __tablename__ = 'customer'
     ## fields
@@ -32,9 +55,11 @@ class Customer(db.Model):
     password = Column(String, nullable=False)
     address = Column(String, nullable=False)
     points = Column(Float, nullable=False)    
+    opt = Column(String) # one time password
     buy_orders = relationship("BuyOrder")
     sell_orders = relationship("SellOrder")
     waiting = relationship("WaitingCategory")
+    
 
     @staticmethod
     def is_valid_credentials(users, body):

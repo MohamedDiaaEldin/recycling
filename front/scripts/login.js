@@ -1,7 +1,9 @@
 const loginBtn = document.getElementById('loginBtn')
 const email = document.getElementById('email')
 const password = document.getElementById('password')
+const signupBtn = document.getElementById('signupBtn')
 
+/// user input validation 
 function isValidateUSerInput(customr){
     const errorMessage  = {}
     errorMessage.empty = false
@@ -16,7 +18,7 @@ function isValidateUSerInput(customr){
     return errorMessage
 }
 
-/// build formatted empty field
+/// build formatted empty field for error message
 const buildEmptyFields = (emptyFields)=>{
     let formattedEmpty = ""
     for(field of emptyFields){
@@ -76,4 +78,8 @@ const addCustomer = ()=>{
     //     .catch((err) => console.log(err));    
 }
 
-loginBtn.addEventListener('click', addCustomer)
+// handel sign up button click
+
+signupBtn.addEventListener('click', ()=>{
+    document.location.href = 'signup.html'
+})

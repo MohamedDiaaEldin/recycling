@@ -4,7 +4,6 @@ from flask import jsonify
 from main import app
 
 
-
 @app.errorhandler(400)
 def bad_request_handler(message='bad request'):
         return jsonify({

@@ -38,6 +38,50 @@
                  } 
       </pre> 
 
+    - /customer_email POST
+
+      <pre>
+         - request body 
+         {
+           "email" : "example.com"
+         }
+         - sucess response 
+         {
+            {
+                    'success': True,
+                    'status_code' : 200
+            }
+         }
+      </pre>
+
+
+    - /customer_email POST
+
+      <pre>
+         - request body 
+              {
+              "email"  : "mdiaan404@gmail.com",
+              "otp" : "581484"
+               }
+
+        - sucess response 
+         {
+            {
+                    'success': True,
+                    'status_code' : 200
+            }
+         }
+          
+        -wrong otp response 
+          {
+            'success' : False,
+            'status_sode': 401,
+            'message' :"unauthorized user"
+          }
+      </pre>
+
+
+      
     - /matrials GET 
 
     - /categories GET

@@ -56,6 +56,9 @@ body {
   font-size: 1.2em;
   font-weight: 500;
 }
+.signup button:hover {
+  background-color: #06b469;
+}
 
 /* The Modal (background) */
 .modal {
