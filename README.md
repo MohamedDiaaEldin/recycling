@@ -83,8 +83,49 @@
 
       
     - /matrials GET 
+      <pre> {
+              "length": 3,
+              "matrials": [
+                  {
+                      "id": 1,
+                      "name": "plastic"
+                  },
+                  {
+                      "id": 2,
+                      "name": "glass"
+                  },
+                  {
+                      "id": 3,
+                      "name": "aluminum"
+                  }
+              ]
+          }
+      </pre>
 
     - /categories GET
+      <pre> 
+            {              
+              "length": 4 , 
+              "categories": [
+                  {
+                      "id": 1,
+                      "name": "chair"
+                  },
+                  {
+                      "id": 2,
+                      "name": "bottle"
+                  },
+                  {
+                      "id": 3,
+                      "name": "window"
+                  },
+                  {
+                      "id": 4,
+                      "name": "table"
+                  }
+              ]
+          }
+      </pre>
 
     - /logout POST 
 
