@@ -6,8 +6,10 @@ const address = document.getElementById("address");
 const password = document.getElementById("password");
 const passwordConfirm = document.getElementById("con_password");
 const signBtn = document.getElementById("sign_btn");
+const verifyBtn = document.getElementById("verifyBtn");
+
 /// variafacation code modal
-const modal = document.getElementById('codeModel')
+const modal = document.getElementById("codeModel");
 
 // is not empty
 // password length
@@ -39,14 +41,14 @@ function isValidateUSerInput(customer) {
   return errorMessage;
 }
 
-
-const buildEmptyFields = (emptyFields)=>{
-  let formattedEmpty = ""
-  for(field of emptyFields){
-    formattedEmpty += field +" \n"
+const buildEmptyFields = (emptyFields) => {
+  let formattedEmpty = "";
+  for (field of emptyFields) {
+    formattedEmpty += field + " \n";
   }
-  return formattedEmpty
-}
+  return formattedEmpty;
+};
+
 const addCustomer = () => {
   customer = {
     firstName: firstName.value,
@@ -61,7 +63,7 @@ const addCustomer = () => {
   let errorMessage = "error : ";
   let error = true;
   if (validation.emptyValidation) {
-    errorMessage += "empty fields \n" + buildEmptyFields(validation.empty) ;
+    errorMessage += "empty fields \n" + buildEmptyFields(validation.empty);
   } else if (validation.passwordLength === false) {
     errorMessage += "the password length must be at least 8 characters";
   } else if (validation.passwordConfirmation === false) {
@@ -69,79 +71,112 @@ const addCustomer = () => {
   } else {
     error = false; // there no error
   }
-  const errorElement = document.querySelector('.error')
+  const errorElement = document.querySelector(".error");
   if (error) {
-    console.log(errorMessage)
-    errorElement.textContent = errorMessage
-    // alert(errorMessage);
+    console.log(errorMessage);
+    errorElement.textContent = errorMessage;
   } else {
-    errorElement.textContent = ""
-    // console.log("it's ok");
+    errorElement.textContent = "";
 
-    displayEmailPOp(customer.email)
-    /// get the model and display it 
-
-    // }
-    // fetch("http://localhost:5000/customer", {
-    //   method: "POST",
-    //   dataType: "json",
-    //   mode: "cors",
-    //   body: JSON.stringify(customer),
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     Accept: "application/json",
-    //   },
-    // })
-    //   .then((r) => {
-    //     // console.dir(r)
-    //     return r.json();
-    //   })
-    //   .then((data) => {
-    //     if (data.status_code === 200) {
-    //       console.log("success");
-    //       window.location.href = "success_signup.html";
-    //     }
-    //   })
-    //   .catch((err) => console.log(err));
+    fetch("http://localhost:5000/customer_email", {
+      method: "POST",
+      dataType: "json",
+      mode: "cors",
+      body: JSON.stringify({ email: customer.email.trim() }),
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        if (data.status_code === 200) {
+          console.log("success");
+          displayEmailPOp(customer.email);
+        }
+      })
+      .catch((error) => console.log(error));
   }
 };
 
 signBtn.addEventListener("click", addCustomer);
 
-
-
-const displayEmailPOp = (email)=>{  
-  const parElement = modal.querySelector('.modal-content p')
-  console.log(parElement)
-  parElement.textContent = "Enter code sent to  " + email
+const displayEmailPOp = (email) => {
+  const parElement = modal.querySelector(".modal-content p");
+  parElement.textContent = "Enter code sent to  " + email;
   modal.style.display = "block";
-}
-
+};
 
 // change email handler
-const changeEmailElement = document.querySelector('.modal-content a')
- 
-const changeEmailHandler = ()=>{
-  modal.style.display = "none"
-}
+const changeEmailElement = document.querySelector(".modal-content a");
 
-changeEmailElement.addEventListener('click', changeEmailHandler)
+const changeEmailHandler = () => {
+  modal.style.display = "none";
+};
 
+changeEmailElement.addEventListener("click", changeEmailHandler);
+/// handel faild response
+const updateOtpUi = () => {
+  /// get error html tag
+  otpErrorElement = document.getElementById("otpError");
+  print(otpErrorElement);
+  /// update ui
+  otpErrorElement.textContent = "wrong code";
+};
 
 /// check code varifacation
-const verifyBtn = document.getElementById('verifyBtn')
-const verifyClickHandler = ()=>{
-  const varifyCode = document.getElementById('emailCode').value
-  if (varifyCode.trim().length === 0){
-    alert('please enter varification code')
-  }
-  else{
-    // make request with this code 
-    // get response 
-    // if valid code    
-    //    jump into login page 
+const verifyClickHandler = () => {
+  // get otp
+  const otp = document.getElementById("emailCode").value;
+
+  // validat code entered
+  if (otp.trim().length === 0) {
+    alert("enter OTP that sent to your email");
+  } else {
+    // make reuqets to validate otp
+
+    fetch("http://localhost:5000/customer_otp", {
+      method: "POST",
+      dataType: "json",
+      mode: "cors",
+      body: JSON.stringify({ email: customer.email.trim(), otp: otp.trim() }),
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    })
+      .then(function (response) {
+        if (!response.ok) {          
+          throw new Error(response.status);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // valid otp        
+        if (data.status_code === 200) {          
+          console.log("success");                
+
+          /// TODO - send customer data to backend
+
+          // go to login page           
+          window.location.href = "login.html"          
+
+        }
+      })
+      .catch((error) => {
+        console.log("error is : " + error);        
+        if (error.message === "401") {
+          updateOtpUi()
+        };
+      });
+    // make request with this code
+    // get response
+    // if valid code
+    //    jump into login page
     // else
     ///   alert with error message
   }
-}
-verifyBtn.addEventListener('click', verifyClickHandler)
+};
+verifyBtn.addEventListener("click", verifyClickHandler);

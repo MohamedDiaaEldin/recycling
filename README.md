@@ -55,7 +55,7 @@
       </pre>
 
 
-    - /customer_email POST
+    - /customer_otp POST
 
       <pre>
          - request body 
