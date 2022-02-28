@@ -1,3 +1,12 @@
+/// notes :  update ui with loder while sending requests to backend
+import { fetchRequest } from "./FetchRequest.js";
+import { isValidateUSerInput } from "./ValidateInput.js";
+import {
+  displayErrorAtElement,
+  buildValidationErrorMessage,
+} from "./HandelErrors.js";
+import { hideModal, showOTPModal } from "./Modal.js";
+
 const firstName = document.getElementById("first_name");
 const lastName = document.getElementById("last_name");
 const email = document.getElementById("email");
@@ -5,128 +14,65 @@ const phone = document.getElementById("phone");
 const address = document.getElementById("address");
 const password = document.getElementById("password");
 const passwordConfirm = document.getElementById("con_password");
-const signBtn = document.getElementById("sign_btn");
-const verifyBtn = document.getElementById("verifyBtn");
+const signBtn = document.getElementById("sign_btn"); /// button
+const verifyBtn = document.getElementById("verifyBtn"); /// button
+const errorElement = document.querySelector(".error");
+let customer_data = undefined;
+const modal = document.getElementById("codeModel"); /// variafacation code modal
+const parElement = modal.querySelector(".modal-content p");
+const changeEmailElement = document.querySelector(".modal-content a"); /// button
 
-/// variafacation code modal
-const modal = document.getElementById("codeModel");
-
-// is not empty
-// password length
-// password confirmation
-// phone validation
-function isValidateUSerInput(customer) {
-  const errorMessage = {};
-  errorMessage.empty = [];
-  errorMessage.emptyValidation = false;
-  errorMessage.passwordLength = true;
-  errorMessage.passwordConfirmation = true;
-
-  for (const input in customer) {
-    if (customer[input].trim().length === 0) {
-      errorMessage.empty.push(input);
-      errorMessage.emptyValidation = true;
-    }
-  }
-
-  // if field not empty
-  if (errorMessage.emptyValidation === false) {
-    // password length
-    if (customer.password.trim().length < 8) {
-      errorMessage.passwordLength = false;
-    } else if (customer.password.trim() !== customer.password_confirm.trim()) {
-      errorMessage.passwordConfirmation = false;
-    }
-  }
-  return errorMessage;
-}
-
-const buildEmptyFields = (emptyFields) => {
-  let formattedEmpty = "";
-  for (field of emptyFields) {
-    formattedEmpty += field + " \n";
-  }
-  return formattedEmpty;
-};
-
-const addCustomer = () => {
-  customer = {
-    firstName: firstName.value,
-    lastName: lastName.value,
+/// sign up click handller
+const signUpClickHandler = () => {
+  customer_data = {
+    first_name: firstName.value,
+    last_name: lastName.value,
     email: email.value,
     phone: phone.value,
     address: address.value,
     password: password.value,
-    password_confirm: passwordConfirm.value,
   };
+  const customer = { ...customer_data };
+  customer.password_confirm = passwordConfirm.value;
+
   const validation = isValidateUSerInput(customer);
-  let errorMessage = "error : ";
-  let error = true;
-  if (validation.emptyValidation) {
-    errorMessage += "empty fields \n" + buildEmptyFields(validation.empty);
-  } else if (validation.passwordLength === false) {
-    errorMessage += "the password length must be at least 8 characters";
-  } else if (validation.passwordConfirmation === false) {
-    errorMessage += "the password confirmation doesn't match";
-  } else {
-    error = false; // there no error
-  }
-  const errorElement = document.querySelector(".error");
-  if (error) {
+  const errorMessage = buildValidationErrorMessage(validation);
+
+  if (errorMessage) {
     console.log(errorMessage);
-    errorElement.textContent = errorMessage;
-  } else {
-    errorElement.textContent = "";
-
-    fetch("http://localhost:5000/customer_email", {
-      method: "POST",
-      dataType: "json",
-      mode: "cors",
-      body: JSON.stringify({ email: customer.email.trim() }),
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        if (data.status_code === 200) {
-          console.log("success");
-          displayEmailPOp(customer.email);
-        }
-      })
-      .catch((error) => console.log(error));
+    // input field error element
+    displayErrorAtElement(errorElement, errorMessage);
+    return;
   }
+  // if inputs is valid
+  displayErrorAtElement(errorElement, "");
+
+  /// send email to back end to generate otp
+  fetchRequest("customer_email", "POST", { email: customer_data.email.trim() })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(response.status);
+      }
+      return response.json();
+    })
+    .then((json_data) => {
+      if (json_data.status_code === 200) {
+        console.log("success");
+        showOTPModal(modal, parElement, customer_data.email);
+      }
+    })
+    .catch((error) => console.log(error));
+}; // end of method
+
+signBtn.addEventListener("click", signUpClickHandler);
+
+/////// change email handler
+const changeEmailClickHandler = () => {
+  hideModal(modal);
 };
+changeEmailElement.addEventListener("click", changeEmailClickHandler);
 
-signBtn.addEventListener("click", addCustomer);
-
-const displayEmailPOp = (email) => {
-  const parElement = modal.querySelector(".modal-content p");
-  parElement.textContent = "Enter code sent to  " + email;
-  modal.style.display = "block";
-};
-
-// change email handler
-const changeEmailElement = document.querySelector(".modal-content a");
-
-const changeEmailHandler = () => {
-  modal.style.display = "none";
-};
-
-changeEmailElement.addEventListener("click", changeEmailHandler);
-/// handel faild response
-const updateOtpUi = () => {
-  /// get error html tag
-  otpErrorElement = document.getElementById("otpError");
-  print(otpErrorElement);
-  /// update ui
-  otpErrorElement.textContent = "wrong code";
-};
-
-/// check code varifacation
+////// check code varifacation
 const verifyClickHandler = () => {
   // get otp
   const otp = document.getElementById("emailCode").value;
@@ -134,49 +80,56 @@ const verifyClickHandler = () => {
   // validat code entered
   if (otp.trim().length === 0) {
     alert("enter OTP that sent to your email");
-  } else {
-    // make reuqets to validate otp
-
-    fetch("http://localhost:5000/customer_otp", {
-      method: "POST",
-      dataType: "json",
-      mode: "cors",
-      body: JSON.stringify({ email: customer.email.trim(), otp: otp.trim() }),
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    })
-      .then(function (response) {
-        if (!response.ok) {          
-          throw new Error(response.status);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        // valid otp        
-        if (data.status_code === 200) {          
-          console.log("success");                
-
-          /// TODO - send customer data to backend
-
-          // go to login page           
-          window.location.href = "login.html"          
-
-        }
-      })
-      .catch((error) => {
-        console.log("error is : " + error);        
-        if (error.message === "401") {
-          updateOtpUi()
-        };
-      });
-    // make request with this code
-    // get response
-    // if valid code
-    //    jump into login page
-    // else
-    ///   alert with error message
+    return;
   }
+
+  // if otp input not empty
+  fetchRequest("customer_otp", "POST", {
+    email: customer_data.email.trim(),
+    otp: otp,
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(response.status);
+      }
+      return response.json();
+    })
+    .then((json_data) => {
+      console.log(json_data);
+      if (json_data.status_code === 200) {
+        console.log("success");
+        // send customer data to backend      
+        sendCustomer()
+        window.location.href = "login.html";
+      }
+    })
+    .catch((error) => {
+      console.log("error is : " + error);
+      if (error.message === "401") {
+        displayErrorAtElement(
+          document.getElementById("otpError"),
+          "wrong code"
+        );
+      }
+    });
 };
 verifyBtn.addEventListener("click", verifyClickHandler);
+
+// send customer data to backend      
+const sendCustomer = () => {
+  console.log(customer_data)
+  fetchRequest("customer", "POST", customer_data)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(response.status);
+      }
+      return response.json();
+    })
+    .then( json_data =>{
+      console.log(json_data)
+      if(json_data.status_code === 200){
+        console.log('success add')
+      }
+    }).catch( error => console.log(error))
+};
+

@@ -50,12 +50,13 @@ class Customer(db.Model):
     __tablename__ = 'customer'
     ## fields
     id = Column(Integer, primary_key=True) # outo increment
-    name = Column(String, nullable=False)
+    first_name = Column(String, nullable=False)
+    last_name = Column(String, nullable=False)
     email = Column(String, nullable=False)
     password = Column(String, nullable=False)
     address = Column(String, nullable=False)
+    phone = Column(String, nullable=False)
     points = Column(Float, nullable=False)    
-    opt = Column(String) # one time password
     buy_orders = relationship("BuyOrder")
     sell_orders = relationship("SellOrder")
     waiting = relationship("WaitingCategory")
@@ -69,7 +70,7 @@ class Customer(db.Model):
         return not (body == None or 'email' not in body or 'password' not in body)
     @staticmethod
     def is_valid_customer_data(body):
-        return not (body != None and 'name' not in body or 'email' not in body or 'password' not in body or 'address' not in body)
+        return not (body != None and 'first_name' not in body or 'last_name' not in body or 'email' not in body or 'password' not in body or 'address' not in body or 'phone' not in body)
     def __str__(self) :
         return f'{self.id}, {self.name}'
 

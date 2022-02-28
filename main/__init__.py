@@ -1,3 +1,4 @@
+from crypt import methods
 import email
 from sre_constants import SUCCESS
 from flask import Flask , jsonify ,request
@@ -27,6 +28,11 @@ def otp():
         if not Customer_OTP.is_valid_request_data(body):
             return bad_request_handler()
         
+
+        ## check if user is signed up before 
+        customers = Customer.query.filter_by(email=email).all()
+        if len(customers) != 0:
+            
 
         email = body.get('email')
         # generate OTP - oen time password
@@ -98,12 +104,13 @@ def varify_otp():
 def add_customer():        
     try:
         # validate json request  formate 
+
         body = request.get_json()
         if not Customer.is_valid_customer_data(body) :
             return bad_request_handler()
 
         ## create new customer 
-        new_customer = Customer(name=body.get('name'), email=body.get('email'), password=body.get('password'), address=body.get('address'), points=0.0)
+        new_customer = Customer(first_name=body.get('first_name'),last_name=body.get('last_name'), email=body.get('email'), password=body.get('password'), address=body.get('address'),phone=body.get('phone'), points=0.0)
         # add to database
         new_customer.add()
 
