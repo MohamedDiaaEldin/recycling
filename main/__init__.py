@@ -14,9 +14,11 @@ migrate  = Migrate(app=app, db=db)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-from error_handler import bad_request_handler, server_error_handler, success_request_handler, unauthorized_user_handler
+from error_handler import bad_request_handler, server_error_handler, success_request_handler, unauthorized_user_handler, conflict_error_handler
 
 
+
+@app.route('/login')
 
 
 ## end point recives email and send OTP to email 
@@ -28,18 +30,19 @@ def otp():
         if not Customer_OTP.is_valid_request_data(body):
             return bad_request_handler()
         
-
-        ## check if user is signed up before 
-        customers = Customer.query.filter_by(email=email).all()
-        if len(customers) != 0:
-            
-
         email = body.get('email')
+
+        # if email aleady siguned up 
+        if Customer.is_email_there(email):            
+            return conflict_error_handler()
+        
+        
         # generate OTP - oen time password
         otp  = generateOTP()    
 
         # check if email in customer otp table 
         customer_otp = Customer_OTP.query.get(email)
+        
         # if email is stored in database before 
         if customer_otp != None :
             # update otp with new one 

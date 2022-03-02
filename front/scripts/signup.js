@@ -44,6 +44,7 @@ const signUpClickHandler = () => {
     displayErrorAtElement(errorElement, errorMessage);
     return;
   }
+
   // if inputs is valid
   displayErrorAtElement(errorElement, "");
 
@@ -61,7 +62,13 @@ const signUpClickHandler = () => {
         showOTPModal(modal, parElement, customer_data.email);
       }
     })
-    .catch((error) => console.log(error));
+    .catch((error) => {
+      // if user aleady signed up 
+      if (error.message === "409"){
+        displayErrorAtElement(errorElement, "email aleady signup")
+      }
+      console.log(error);
+    });
 }; // end of method
 
 signBtn.addEventListener("click", signUpClickHandler);
@@ -98,13 +105,14 @@ const verifyClickHandler = () => {
       console.log(json_data);
       if (json_data.status_code === 200) {
         console.log("success");
-        // send customer data to backend      
-        sendCustomer()
+        // send customer data to backend
+        sendCustomer();
         window.location.href = "login.html";
       }
     })
     .catch((error) => {
       console.log("error is : " + error);
+      /// if wrong otp 
       if (error.message === "401") {
         displayErrorAtElement(
           document.getElementById("otpError"),
@@ -115,9 +123,11 @@ const verifyClickHandler = () => {
 };
 verifyBtn.addEventListener("click", verifyClickHandler);
 
-// send customer data to backend      
+
+
+// send customer data to backend
 const sendCustomer = () => {
-  console.log(customer_data)
+  console.log(customer_data);
   fetchRequest("customer", "POST", customer_data)
     .then((response) => {
       if (!response.ok) {
@@ -125,11 +135,11 @@ const sendCustomer = () => {
       }
       return response.json();
     })
-    .then( json_data =>{
-      console.log(json_data)
-      if(json_data.status_code === 200){
-        console.log('success add')
+    .then((json_data) => {
+      console.log(json_data);
+      if (json_data.status_code === 200) {
+        console.log("success add");
       }
-    }).catch( error => console.log(error))
+    })
+    .catch((error) => console.log(error));
 };
-

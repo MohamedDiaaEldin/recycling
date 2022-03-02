@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import  Column, Integer, ForeignKey
+from sqlalchemy import  Column, Integer, ForeignKey, false
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql.sqltypes import Date, Float, String , Time
@@ -61,6 +61,15 @@ class Customer(db.Model):
     sell_orders = relationship("SellOrder")
     waiting = relationship("WaitingCategory")
     
+
+    @staticmethod
+    def is_email_there(email):
+        ## check if user is signed up before 
+        customers = Customer.query.filter_by(email=email).all()
+        if len(customers) == 0 :
+            return False
+        return True             
+
 
     @staticmethod
     def is_valid_credentials(users, body):

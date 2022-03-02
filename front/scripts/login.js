@@ -1,85 +1,59 @@
-const loginBtn = document.getElementById('loginBtn')
-const email = document.getElementById('email')
-const password = document.getElementById('password')
-const signupBtn = document.getElementById('signupBtn')
+import { fetchRequest } from "./FetchRequest.js";
+import { getEmptyFields } from "./ValidateInput.js";
+import { buildEmptyFields } from "./HandelErrors.js";
+import { isValidLoginInput } from "./ValidateInput.js";
+import { displayErrorAtElement } from "./HandelErrors.js";
 
-/// user input validation 
-function isValidateUSerInput(customr){
-    const errorMessage  = {}
-    errorMessage.empty = false
-    errorMessage.emptyFields = []
+const loginBtn = document.getElementById("loginBtn");
+const email = document.getElementById("email");
+const password = document.getElementById("password");
+const signupBtn = document.getElementById("signupBtn");
 
-    for(const key in customr){
-        if (customr[key].trim().length === 0){
-            errorMessage.empty = true
-            errorMessage.emptyFields.push(key)
-        }
-    }
-    return errorMessage
-}
+/// user input validation
+const loginClickHandler = () => {
+  const customer = {
+    email: email.value,
+    password: password.value,
+  };
 
-/// build formatted empty field for error message
-const buildEmptyFields = (emptyFields)=>{
-    let formattedEmpty = ""
-    for(field of emptyFields){
-      formattedEmpty += field +" \n"
-    }
-    return formattedEmpty
+  const validation = isValidLoginInput(customer);
+
+  const errorElement = document.querySelector(".error");
+  /// If there is empty fields
+  if (validation.empty) {
+    const errorMessage =
+      "error: empty fields \n" + buildEmptyFields(validation.emptyFields);
+    displayErrorAtElement(errorElement, errorMessage);
+    return;
   }
+  /// esle 
+  /// make request with login data
+  displayErrorAtElement(errorElement, "");
 
-const addCustomer = ()=>{
-    
-    customer = {        
-        email: email.value,  
-        password:password.value        
-    } 
-    
-    const validation = isValidateUSerInput(customer)
-    const errorElement = document.querySelector('.error')
-    if(validation.empty){
-        const errorMessage = "error: empty fields \n" + buildEmptyFields(validation.emptyFields) 
-        errorElement.textContent = errorMessage
-        // alert(errorMessage)
-    }
-    else{
-        errorElement.textContent = ""
+  fetchRequest("login", "POST", customer)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(response.status);
+      }
+      return response.json();
+    })
+    .then((json_data) => {
+      if (json_data.status_code === 200) {
+          // TODO
+          // recive jwt and store it as cookie  
+          /// go to order page 
+        alert("logined in :)");
+      }
+    })
+    .catch((error) => {
+        // if user unauthorized
+      if (error.message === "401")
+        displayErrorAtElement(errorElement, "wrong email or password");
+    });
+};
+loginBtn.addEventListener("click", loginClickHandler);
 
-        // send reuest with data to validate user 
-        // if valid :
-        //      get jwt and save it 
-        // else :
-        //      not valid user data
-    }   
-
-    //   fetch("http://localhost:5000/login", {
-    //     method: "POST",
-    //     dataType: "json",
-    //     mode: "cors",
-    //     body: JSON.stringify(customer),
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Accept: "application/json",
-    //     },
-    //   })
-    //     .then((r) => {
-    //       // console.dir(r)
-    //       return r.json();
-    //     })
-    //     .then((data) => {
-    //       console.log(data);
-    //       if (data.status_code === 200) {
-    //         window.location.href = "success_login.html";
-    //       } else if (data.status_code == 401) {
-    //         alert("wrong email or password");
-    //       } else {
-    //         alert("email or password not correct");
-    //       }
-    //     })
-    //     .catch((err) => console.log(err));    
-}
-
-// handel sign up button click
-
-signupBtn.addEventListener('click', ()=>{
-    document.location.href = 'signup.html'
-})
+// sign up click listner
+signupBtn.addEventListener("click", () => {
+  document.location.href = "signup.html";
+});

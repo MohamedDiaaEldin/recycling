@@ -20,6 +20,13 @@ def server_error_handler(message='server error'):
             'message':message
         }), 500
 
+@app.errorhandler(409)
+def conflict_error_handler(message='Email Conflict'):
+        return jsonify({
+            'status_code': 409 ,
+            'message':message
+        }), 409
+
 
 @app.errorhandler(401)
 def  unauthorized_user_handler(message='unauthorized user'):

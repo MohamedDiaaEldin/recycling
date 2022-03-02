@@ -5,7 +5,7 @@ export const displayErrorAtElement = (element, err_message)=>{
 }
 
 
-const buildEmptyFields = (emptyFields) => {
+export const buildEmptyFields = (emptyFields) => {
   let formattedEmpty = "";
   for (const field of emptyFields) {
     formattedEmpty += field + " \n";
@@ -33,3 +33,5 @@ export const buildValidationErrorMessage = (validation)=>{
   }
   return ''
 }  
+
+
