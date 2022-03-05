@@ -36,6 +36,17 @@ def  unauthorized_user_handler(message='unauthorized user'):
         'message' :message
     }), 401
 
+
+
+
+def succes_login_handler(jwt, public_id):
+    return jsonify({
+        'status_code': 200,
+        'success' : True , 
+        'jwt' : jwt,
+        'public_id' : public_id,
+    }), 200
+
 def success_request_handler():
         return jsonify({
             'status_code' :200,

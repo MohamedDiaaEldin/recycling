@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import  Column, Integer, ForeignKey, false
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.sql.sqltypes import Date, Float, String , Time
+from sqlalchemy.sql.sqltypes import Date, Float, String , Time , Boolean
 from flask import jsonify
 
 
@@ -49,7 +49,8 @@ class Customer_OTP(db.Model):
 class Customer(db.Model):
     __tablename__ = 'customer'
     ## fields
-    id = Column(Integer, primary_key=True) # outo increment
+    id = Column(Integer, primary_key=True) # outo increment    
+    public_id = Column(Integer) # outo increment    
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     email = Column(String, nullable=False)
@@ -57,8 +58,6 @@ class Customer(db.Model):
     address = Column(String, nullable=False)
     phone = Column(String, nullable=False)
     points = Column(Float, nullable=False)    
-    buy_orders = relationship("BuyOrder")
-    sell_orders = relationship("SellOrder")
     waiting = relationship("WaitingCategory")
     
 
@@ -102,43 +101,34 @@ class Delivery(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     address = Column(String, nullable=False)
-    phone = Column(String, nullable=False)
-    orders = relationship("SellOrder")
+    phone = Column(String, nullable=False)    
 
     def add(self):
         add(self)
 
 
+# for delivery page - needs admin
+# class SellOrder(db.Model):
+#     id = Column(Integer, primary_key=True)    
+#     sell_category_matrial_id = Column(Integer, ForeignKey('sell_categorymatrial.id'))
+#     delivery_id = Column(Integer, ForeignKey('delivery.id'))    
 
-class SellOrder(db.Model):
-    id = Column(Integer, primary_key=True)
-    weight = Column(Float, nullable=False)
-    customer_id = Column(Integer, ForeignKey('customer.id'))
-    delivery_id = Column(Integer, ForeignKey('delivery.id'))
-    sell_orders = relationship("SellCategorymatrial")
-
-    def add(self):
-        add(self)
+#     def add(self):
+#         add(self)
 
 
-class BuyOrder(db.Model):
-    id = Column(Integer, primary_key=True)
-    weight = Column(Float, nullable=False)
-    date = Column(Date, nullable=False) ## string for now
-    time = Column(Time, nullable=False) ## String for now
-    customer_id = Column(Integer, ForeignKey('customer.id')) 
-    buy_orders = relationship("BuyCategoryMatrial")
+# class BuyOrder(db.Model):
+#     id = Column(Integer, primary_key=True)            
+#     buy_category_matrial = Column(Integer, ForeignKey('buy_category_matrial.id')) 
 
-    def add(self):
-        add(self)
+#     def add(self):
+#         add(self)
 
 class Category(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     matrialCategories = relationship("MatrialCategory")
-    buy_orders = relationship("BuyCategoryMatrial")
-    sell_orders = relationship("SellCategorymatrial")
-
+    
     @staticmethod
     def get_json_categories(categories):
         list = []
@@ -200,22 +190,41 @@ class MatrialCategory(db.Model):
 
 
 class BuyCategoryMatrial(db.Model):
-    matrial_id = Column(Integer,  ForeignKey('matrial.id'), primary_key=True)
-    category_id = Column(Integer, ForeignKey('category.id'), primary_key=True)
-    buy_order_id = Column(Integer, ForeignKey('buy_order.id'), primary_key=True)
+    id = Column(Integer, primary_key=True)
+    matrial_id = Column(Integer,  ForeignKey('matrial.id'))
+    category_id = Column(Integer, ForeignKey('category.id'))        
+    customer_id = Column(Integer, ForeignKey('customer.id'))            
+    date = Column(String, nullable=False) 
+    time = Column(String, nullable=False) 
     weight = Column(Float, nullable=False)
     price =  Column(Float, nullable=False)
-    
+    done =  Column(Boolean, nullable=False)
+ 
 
     def add(self):
         add(self)
 
-class SellCategorymatrial(db.Model):
-    matrial_id = Column(Integer, ForeignKey('matrial.id'), primary_key=True)
-    category_id = Column(Integer, ForeignKey('category.id'),primary_key=True)
-    sell_order_id = Column(Integer, ForeignKey('sell_order.id'), primary_key=True)
+class SellCategorymatrial(db.Model):    
+    id = Column(Integer, primary_key=True)
+    matrial_id = Column(Integer, ForeignKey('matrial.id'))
+    category_id = Column(Integer, ForeignKey('category.id'))
+    delivery_id = Column(Integer, ForeignKey('delivery.id'))
+    customer_id = Column(Integer, ForeignKey('customer.id')) # will start with default untill admin select whihc delivery
+    date = Column(String, nullable=False) 
+    time = Column(String, nullable=False) 
     weight = Column(Float, nullable=False)
-    price =  Column(Float, nullable=False)  
+    points =  Column(Float, nullable=False)  # default false 
+    done =  Column(Boolean, nullable=False)
 
     def add(self):
         add(self)
+
+
+## for autoincrment 
+class PublicIdAuto(db.Model):
+    id = Column(Integer, primary_key=True)
+
+    def add(self):        
+        add(self)
+
+

@@ -7,6 +7,7 @@
     <title>Home</title>
     <script src="scripts/index.js" defer></script>
     <link rel="stylesheet" href="style/home.css" />
+    <link rel="stylesheet" href="style/orders.css" />
     <script
       src="https://kit.fontawesome.com/f8661f3d77.js"
       crossorigin="anonymous"
@@ -40,119 +41,124 @@
 
 
     <div id="homePage">
-      <div id="homeDEV"></div>
-
-      <section id="howItWorksSection" class="how-it-works">
-        <h1>How it works</h1>
-        <div class="buyer-seller">
-          <a href="#buyer" id="buyerBtn" class="buyer">Buyer</a>
-          <a href="#seller" id="sellerBtn" class="seller">Seller</a>
+      <div id="mainContent">
+        <div id="homeDEV">
+        
         </div>
-
-        <template id="buyerTemplate">
-          <div id="buyer-how-it-works">
+  
+        <section id="howItWorksSection" class="how-it-works">
+          <h1>How it works</h1>
+          <div class="buyer-seller">
+            <a href="#buyer" id="buyerBtn" class="buyer">Buyer</a>
+            <a href="#seller" id="sellerBtn" class="seller">Seller</a>
+          </div>
+  
+          <template id="buyerTemplate">
+            <div id="buyer-how-it-works">
+              <div id="seller-how-it-works">
+                <!-- first row info -->
+                <div class="row-info">
+                  <div class="one">
+                    <i class="fa-solid fa-1" id="one"></i>
+                    <h3>Set up your buyer acount</h3>
+                    <p>tell us your personal informatio</p>
+                  </div>
+  
+                  <div class="two">
+                    <i class="fa-solid fa-2"></i>
+                    <h3>select order information</h3>
+                    <p>choose matrial - weight - date and time</p>
+                  </div>
+                </div>
+                <!-- end of first row -->
+  
+                <!-- second row info  -->
+                <div class="row-info">
+                  <div class="three">
+                    <i class="fa-solid fa-3" id="one"></i>
+                    <h3>Submit your order</h3>
+                    <p>
+                      we will be waiting you on the selected date in our store
+                      address
+                    </p>
+                  </div>
+  
+                  <div class="four">
+                    <i class="fa-solid fa-4"></i>
+                    <h3>Go Recive Order</h3>
+                    <p>Get you car and come on the date</p>
+                  </div>
+                </div>
+                <!-- end of second row -->
+              </div>
+            </div>
+          </template>
+  
+          
+          <template id="sellerTemplate">
             <div id="seller-how-it-works">
               <!-- first row info -->
               <div class="row-info">
                 <div class="one">
                   <i class="fa-solid fa-1" id="one"></i>
-                  <h3>Set up your buyer acount</h3>
+                  <h3>setup your seller acount</h3>
                   <p>tell us your personal informatio</p>
                 </div>
-
+  
                 <div class="two">
                   <i class="fa-solid fa-2"></i>
                   <h3>select order information</h3>
-                  <p>choose matrial - weight - date and time</p>
+                  <p>
+                    choose matrial - Approximate weight - Available date and time
+                  </p>
                 </div>
               </div>
               <!-- end of first row -->
-
+  
               <!-- second row info  -->
               <div class="row-info">
                 <div class="three">
                   <i class="fa-solid fa-3" id="one"></i>
                   <h3>Submit your order</h3>
-                  <p>
-                    we will be waiting you on the selected date in our store
-                    address
-                  </p>
+                  <p>Make sure to allow location permission</p>
                 </div>
-
+  
                 <div class="four">
                   <i class="fa-solid fa-4"></i>
-                  <h3>Go Recive Order</h3>
-                  <p>Get you car and come on the date</p>
+                  <h3>Earn Points</h3>
+                  <p>
+                    our workers will come on date and weight your order package
+                    then you will get confirmation email with order details and
+                    your earned points
+                  </p>
                 </div>
               </div>
-              <!-- end of second row -->
+              <!-- end of second row
+                    <i class="fa-solid fa-2"></i>
+                    <h3>select order information</h3>
+                    <p>choose matrial -->
             </div>
+          </template>
+        </section>
+  
+        <!--  About us section -->
+        <section id="about-us">
+  
+          <h1 class="about-us">About Us</h1>
+  
+          <div id="aboutSection">
+            <pre>We are an Egyptian company
+    that seeks to solve the <span class="greentext"> problem 
+    of waste </span>that can be recycled in Egypt 
+    in a profitable way for users</pre>
+  
+            <img src="./images/waste.png" alt="waste" />
+  
           </div>
-        </template>
-
-        <template id="sellerTemplate">
-          <div id="seller-how-it-works">
-            <!-- first row info -->
-            <div class="row-info">
-              <div class="one">
-                <i class="fa-solid fa-1" id="one"></i>
-                <h3>setup your seller acount</h3>
-                <p>tell us your personal informatio</p>
-              </div>
-
-              <div class="two">
-                <i class="fa-solid fa-2"></i>
-                <h3>select order information</h3>
-                <p>
-                  choose matrial - Approximate weight - Available date and time
-                </p>
-              </div>
-            </div>
-            <!-- end of first row -->
-
-            <!-- second row info  -->
-            <div class="row-info">
-              <div class="three">
-                <i class="fa-solid fa-3" id="one"></i>
-                <h3>Submit your order</h3>
-                <p>Make sure to allow location permission</p>
-              </div>
-
-              <div class="four">
-                <i class="fa-solid fa-4"></i>
-                <h3>Earn Points</h3>
-                <p>
-                  our workers will come on date and weight your order package
-                  then you will get confirmation email with order details and
-                  your earned points
-                </p>
-              </div>
-            </div>
-            <!-- end of second row
-                  <i class="fa-solid fa-2"></i>
-                  <h3>select order information</h3>
-                  <p>choose matrial -->
-          </div>
-        </template>
-      </section>
-
-      <!--  About us section -->
-      <section id="about-us">
-
-        <h1 class="about-us">About Us</h1>
-
-        <div id="aboutSection">
-          <pre>We are an Egyptian company
-  that seeks to solve the <span class="greentext"> problem 
-  of waste </span>that can be recycled in Egypt 
-  in a profitable way for users</pre>
-
-          <img src="./images/waste.png" alt="waste" />
-
-        </div>
-      </section>
-    </div>
-
+        </section>
+      </div>    
+      </div>
+    
     <!-- footer -->
     <footer>
       

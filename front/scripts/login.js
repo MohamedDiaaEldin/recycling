@@ -1,5 +1,4 @@
 import { fetchRequest } from "./FetchRequest.js";
-import { getEmptyFields } from "./ValidateInput.js";
 import { buildEmptyFields } from "./HandelErrors.js";
 import { isValidLoginInput } from "./ValidateInput.js";
 import { displayErrorAtElement } from "./HandelErrors.js";
@@ -26,11 +25,11 @@ const loginClickHandler = () => {
     displayErrorAtElement(errorElement, errorMessage);
     return;
   }
-  /// esle 
+  /// else
   /// make request with login data
   displayErrorAtElement(errorElement, "");
 
-  fetchRequest("login", "POST", customer)
+  fetchRequest("login", "POST", customer, false)
     .then((response) => {
       if (!response.ok) {
         throw new Error(response.status);
@@ -39,14 +38,13 @@ const loginClickHandler = () => {
     })
     .then((json_data) => {
       if (json_data.status_code === 200) {
-          // TODO
-          // recive jwt and store it as cookie  
-          /// go to order page 
-        alert("logined in :)");
+        localStorage.setItem('jwt', json_data.jwt)
+        localStorage.setItem('public_id', json_data.public_id)
+        window.location.href = 'orders.html'
       }
     })
     .catch((error) => {
-        // if user unauthorized
+      // if user unauthorized
       if (error.message === "401")
         displayErrorAtElement(errorElement, "wrong email or password");
     });

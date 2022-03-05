@@ -49,7 +49,7 @@ const signUpClickHandler = () => {
   displayErrorAtElement(errorElement, "");
 
   /// send email to back end to generate otp
-  fetchRequest("customer_email", "POST", { email: customer_data.email.trim() })
+  fetchRequest("customer_email", "POST", { email: customer_data.email.trim() }, false)
     .then((response) => {
       if (!response.ok) {
         throw new Error(response.status);
@@ -94,7 +94,7 @@ const verifyClickHandler = () => {
   fetchRequest("customer_otp", "POST", {
     email: customer_data.email.trim(),
     otp: otp,
-  })
+  }, false)
     .then((response) => {
       if (!response.ok) {
         throw new Error(response.status);
@@ -128,7 +128,7 @@ verifyBtn.addEventListener("click", verifyClickHandler);
 // send customer data to backend
 const sendCustomer = () => {
   console.log(customer_data);
-  fetchRequest("customer", "POST", customer_data)
+  fetchRequest("customer", "POST", customer_data, false)
     .then((response) => {
       if (!response.ok) {
         throw new Error(response.status);

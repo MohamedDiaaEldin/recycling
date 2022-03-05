@@ -1,35 +1,55 @@
-from crypt import methods
+from asyncio import constants
 import email
-from sre_constants import SUCCESS
-from flask import Flask , jsonify ,request
+from wsgiref.util import request_uri
+from flask import Flask , jsonify ,request 
 from flask_migrate import Migrate
-from models import setup_db , Customer , Matrial, Category , MatrialCategory, WaitingCategory , SellOrder, SellCategorymatrial, Delivery , Customer_OTP
 from flask_cors import CORS
+from models import setup_db , Customer , Matrial, Category , MatrialCategory, WaitingCategory , SellCategorymatrial, Delivery , Customer_OTP , PublicIdAuto
 from otp import generateOTP
 from message_email import send_email
+import read_env
+from jwt_generator import encode_data, is_valid_jwt 
 
 app = Flask(__name__)
 db = setup_db(app)
 migrate  = Migrate(app=app, db=db)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
-app.config['CORS_HEADERS'] = 'Content-Type'
 
-from error_handler import bad_request_handler, server_error_handler, success_request_handler, unauthorized_user_handler, conflict_error_handler
-
+app.config['JWT_SECRET'] = read_env.get_value('JWT_SECRET')
 
 
-@app.route('/login')
+from error_handler import bad_request_handler, server_error_handler, success_request_handler, unauthorized_user_handler, conflict_error_handler , succes_login_handler
+
+
+### end point to create new sell order 
+## needs jwt and public_id order_data
+
+
+### end point to get  all orders, active orders , points  
+
+
+
+### verify end point 
+@app.route('/verify')
+def verify_jwt():
+    body  = request.get_json() 
+    if body == None or 'jwt' not in body or 'public_id' not in body:
+        return bad_request_handler()            
+    elif is_valid_jwt(app, body.get('jwt'), body.get('public_id')):
+        return success_request_handler()
+    else:        
+        return unauthorized_user_handler()
+
 
 
 ## end point recives email and send OTP to email 
 @app.route('/customer_email', methods=['POST'])
 def otp():
     try:            
-        body = request.get_json()
+        body = request.get_json() 
         # request body validation 
         if not Customer_OTP.is_valid_request_data(body):
-            return bad_request_handler()
-        
+            return bad_request_handler()        
         email = body.get('email')
 
         # if email aleady siguned up 
@@ -113,7 +133,11 @@ def add_customer():
             return bad_request_handler()
 
         ## create new customer 
-        new_customer = Customer(first_name=body.get('first_name'),last_name=body.get('last_name'), email=body.get('email'), password=body.get('password'), address=body.get('address'),phone=body.get('phone'), points=0.0)
+        public_id = PublicIdAuto.query.all()[0]
+        new_customer = Customer(first_name=body.get('first_name'),last_name=body.get('last_name'), email=body.get('email'), password=body.get('password'), address=body.get('address'),phone=body.get('phone'), points=0.0, public_id=public_id.id+1)
+        ## update public_id 
+        public_id.id = public_id.id + 1
+
         # add to database
         new_customer.add()
 
@@ -138,19 +162,22 @@ def login():
         if not (Customer.is_valid_login_data(body)):
             return bad_request_handler()    
 
+        email = body.get('email')
         # get user from database with this email
-        users = Customer.query.filter_by(email=body.get('email')).all() # query database
+        # cahnge query to select unit first value  TODO
+        users = Customer.query.filter_by(email=email).all() # query database
+
         # if valid not valid user 
         if not Customer.is_valid_credentials(users, body):
                 return unauthorized_user_handler()
-        # if valid user
-## TODO ###### return  jwt
-        return success_request_handler()
+        
+        public_id = str(users[0].public_id)
+        # if valid user        
+        jwt = encode_data(app , public_id)
+        return succes_login_handler(jwt, public_id)
     except:
         print('error while validating user')
         return server_error_handler()
-
-
 
 # get matrials from database 
 # return matrials
