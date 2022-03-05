@@ -14,6 +14,13 @@
     - Postgress Database
 
 
+
+  - ## run backend 
+    <pre>
+     $ pip install -r  requirements.txt 
+     $ export FLASK_APP=main
+     $ flask run 
+    </pre>
   - ## End Points 
     - /customer POST       
       <pre>           
