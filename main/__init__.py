@@ -21,11 +21,14 @@ app.config['JWT_SECRET'] = read_env.get_value('JWT_SECRET')
 from error_handler import bad_request_handler, server_error_handler, success_request_handler, unauthorized_user_handler, conflict_error_handler , succes_login_handler
 
 
-### end point to create new sell order 
-## needs jwt and public_id order_data
 
 
 ### end point to get  all orders, active orders , points  
+## needs jwt and public_id order_data
+
+
+### end point to create new sell order 
+## needs jwt and public_id order_data
 
 
 
@@ -35,11 +38,16 @@ def verify_jwt():
     body  = request.get_json() 
     if body == None or 'jwt' not in body or 'public_id' not in body:
         return bad_request_handler()            
-    elif is_valid_jwt(app, body.get('jwt'), body.get('public_id')):
-        return success_request_handler()
-    else:        
-        return unauthorized_user_handler()
 
+    try:
+        customer = Customer.query.filter_by(public_id=int(body.get('public_id'))).first()        
+        if customer and is_valid_jwt(app, body.get('jwt'), customer.email):
+            return success_request_handler()
+        else:        
+            return unauthorized_user_handler()
+    except:
+        db.session.rollback()
+        return server_error_handler()
 
 
 ## end point recives email and send OTP to email 
@@ -162,21 +170,22 @@ def login():
         if not (Customer.is_valid_login_data(body)):
             return bad_request_handler()    
 
-        email = body.get('email')
-        # get user from database with this email
-        # cahnge query to select unit first value  TODO
-        users = Customer.query.filter_by(email=email).all() # query database
+        email = body.get('email') 
 
-        # if valid not valid user 
-        if not Customer.is_valid_credentials(users, body):
-                return unauthorized_user_handler()
-        
-        public_id = str(users[0].public_id)
-        # if valid user        
-        jwt = encode_data(app , public_id)
-        return succes_login_handler(jwt, public_id)
+        # get user from database with this email                
+        customer = Customer.query.filter_by(email=email).first()
+        ##  valid not valid user 
+        if not Customer.is_valid_credentials(customer, body):
+            return unauthorized_user_handler()                                
+                            
+        # if valid user
+        public_id = str(customer.public_id)        
+        # generate jwt with email
+        jwt = encode_data(app , email)
+        return succes_login_handler(jwt, public_id)                
     except:
-        print('error while validating user')
+        db.session.rollback()
+        print('error while validating user')        
         return server_error_handler()
 
 # get matrials from database 

@@ -71,16 +71,16 @@ class Customer(db.Model):
 
 
     @staticmethod
-    def is_valid_credentials(users, body):
-        return not (len(users) == 0 or users[0].password != body.get('password'))
+    def is_valid_credentials(user, body):
+        return user and user.password == body.get('password')
     @staticmethod
     def is_valid_login_data(body):
-        return not (body == None or 'email' not in body or 'password' not in body)
+        return body and 'email'  in body and 'password'  in body
     @staticmethod
     def is_valid_customer_data(body):
-        return not (body != None and 'first_name' not in body or 'last_name' not in body or 'email' not in body or 'password' not in body or 'address' not in body or 'phone' not in body)
+        return  body  and 'first_name' in body and 'last_name'  in body and 'email' in body and 'password' in body and 'address' in body and 'phone' in body
     def __str__(self) :
-        return f'{self.id}, {self.name}'
+        return f'< id:{self.id}, email:{self.email}>'
 
     def add(self):
         add(self)
