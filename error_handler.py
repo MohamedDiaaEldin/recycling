@@ -10,7 +10,7 @@ def bad_request_handler(message='bad request'):
             'success' : False,
             'status_code':400,
             'message' : message,            
-        }, 400)
+        }), 400
 
 
 @app.errorhandler(500)

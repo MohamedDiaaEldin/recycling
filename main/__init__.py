@@ -1,5 +1,7 @@
 from asyncio import constants
+from crypt import methods
 import email
+from typing import OrderedDict
 from wsgiref.util import request_uri
 from flask import Flask , jsonify ,request 
 from flask_migrate import Migrate
@@ -23,9 +25,40 @@ from error_handler import bad_request_handler, server_error_handler, success_req
 
 
 
+def is_valid_jwt_body(body):
+    return body and 'jwt' in body and 'public_id' in body
+
+
 ### end point to get  all orders, active orders , points  
 ## needs jwt and public_id order_data
+@app.route('/sell_orders', methods=['POST'])
+def get_sell_orders():
+    try:
+        body = request.get_json()
+        ## request body validation
+        if not is_valid_jwt_body(body):
+            return bad_request_handler()
 
+        # get customer data
+        customer = Customer.query.filter_by(public_id=int(body.get('public_id'))).first()        
+
+        # jwt validation
+        if  not customer or not  is_valid_jwt(app, body.get('jwt'), customer.email):
+            return unauthorized_user_handler()
+                
+        # get all orders
+        orders = SellCategorymatrial.get_orders(customer)        
+        return jsonify({
+            'status_code' : 200 ,
+            'total_points' : customer.points,
+            'orders':orders
+        }), 200
+
+    except:
+        db.session.rollback()
+        print('error while get sell order data')
+        return server_error_handler()
+        
 
 ### end point to create new sell order 
 ## needs jwt and public_id order_data
@@ -36,11 +69,11 @@ from error_handler import bad_request_handler, server_error_handler, success_req
 @app.route('/verify')
 def verify_jwt():
     body  = request.get_json() 
-    if body == None or 'jwt' not in body or 'public_id' not in body:
+    if not is_valid_jwt_body(body):
         return bad_request_handler()            
 
-    try:
-        customer = Customer.query.filter_by(public_id=int(body.get('public_id'))).first()        
+    try:                
+        customer = Customer.query.filter_by(public_id=int(body.get('public_id'))).first()
         if customer and is_valid_jwt(app, body.get('jwt'), customer.email):
             return success_request_handler()
         else:        

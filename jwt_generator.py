@@ -20,3 +20,4 @@ def is_valid_jwt(app, jwt, email):
     except:
         return False
 
+

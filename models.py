@@ -216,6 +216,25 @@ class SellCategorymatrial(db.Model):
     points =  Column(Float, nullable=False)  # default false 
     done =  Column(Boolean, nullable=False)
 
+    @staticmethod
+    def get_orders(customer):
+        sell_orders = SellCategorymatrial.query.filter_by(customer_id=customer.id).all()
+        all_orders = []
+        for sell_order in sell_orders:    
+            category = Category.query.get(sell_order.category_id)            
+            matrial = Matrial.query.get(sell_order.matrial_id)            
+            order_details = f"{category.name} - {matrial.name}"                
+            order_data = {
+                'date' : sell_order.date,
+                'time' : sell_order.time,
+                'weight' : sell_order.weight,
+                'points' : sell_order.points,
+                'order_detials' : order_details,
+                'done' : sell_order.done
+            }             
+            all_orders.append(order_data)
+        return all_orders
+
     def add(self):
         add(self)
 

@@ -19,22 +19,30 @@ const displayLogoutButton = () => {
   });
 };
 
+
+/// TODO
+/* function is_valid_jwt(jwt, public_id):{
+  fetch to /verify
+}
+*/
+
+
+
 //  handel login and logout state
 jwt = window.localStorage.jwt;
-if (jwt === "") {
+if (jwt === "") {  // or not valid jwt  TODO
   // dsiplay login button
   logBtn.textContent = "login";
   logBtn.addEventListener("click", () => {
     window.location.href = "login.html";
   });
 } else {
-//// TODO 
-//// SEND request to the backend to validate jwt 
   // dsiplay logout button
   logBtn.textContent = "logout";
   logBtn.addEventListener("click", () => {    
     window.localStorage.jwt = ""
-    /// back to login 
+    window.localStorage.public_id = ""    
+    /// back to login text
     logBtn.textContent = "login";
     logBtn.addEventListener("click", () => {
       window.location.href = "login.html";

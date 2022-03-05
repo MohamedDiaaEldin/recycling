@@ -130,22 +130,36 @@ header ul li {
 }
 
 
+
+
 .orders {
   display: flex;
   flex-direction: column;
   width: 80%;
   align-items: center;
-  background-color: #eeebe5;
+  /* background-color: #eeebe5; */
+  background-color: white;
+  
   margin-top: 20px;
   border-top-right-radius: 10px;
   border-top-left-radius: 10px;
+  /* height: 600px; */
+}
+.pointsDiv{
+width: 100%;
+background-color: #eeebe5;
 }
 
-.orders p {
-  align-self: flex-start;
+.pointsDiv p {  
+  /* align-self: flex-start; */
   padding: 5px;
   margin-left: 10px;
   font-size: 1.1em;
+
+}
+
+.top_margin{
+margin-top: 10px;
 }
 
 .orders .order_info {
@@ -153,8 +167,9 @@ header ul li {
   display: flex;
   justify-content: space-around;
   background-color: #eeebe5;
-  margin-top: 10px;
+  
 }
+
 .orders .order_info p {
   font-style: bold;
 }
