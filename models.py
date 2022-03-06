@@ -136,8 +136,9 @@ class Category(db.Model):
             list.append(category.get_category())    
         return jsonify({
             'categories' : list, 
-            'length': len(list)
-            })
+            'length': len(list),
+            'status_code':200
+            }), 200
 
     def get_category(self) :
         return {
@@ -163,8 +164,9 @@ class Matrial(db.Model):
             list.append(matrial.get_matrial())            
         return jsonify({
             'matrials' : list, 
-            'length': len(list)
-        })
+            'length': len(list),
+            'status_code':200
+        }), 200
         
     def get_matrial(self) :
         return {
@@ -215,6 +217,14 @@ class SellCategorymatrial(db.Model):
     weight = Column(Float, nullable=False)
     points =  Column(Float, nullable=False)  # default false 
     done =  Column(Boolean, nullable=False)
+
+
+    @staticmethod
+    def is_valid_request_date(body):
+        if body and 'sell_data' in body:
+            body = body.get('sell_data')
+            return 'category_id' in body and 'matrial_id' in body and 'date' in body and 'time' in body and 'weight' in body
+        return False
 
     @staticmethod
     def get_orders(customer):

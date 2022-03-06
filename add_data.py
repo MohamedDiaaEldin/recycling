@@ -9,12 +9,14 @@ from main import Customer, Category , Matrial , Delivery, SellCategorymatrial , 
 
 
 
+'''
+glass, paper, cardboard, tires, textiles, batteries, and electronics.
+'''
 
-# matrial = Matrial(name='metal')
+# matrial = Matrial(name='electronics')
 # matrial.add()
 
-
-# category  = Category(name='door')
+# category  = Category(name='chair')
 # category.add()
 
 

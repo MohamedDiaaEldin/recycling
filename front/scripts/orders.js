@@ -128,31 +128,16 @@ const homeClickHandler = () => {
 logoutBtn.addEventListener("click", logoutClickHandler);
 homeBtn.addEventListener("click", homeClickHandler);
 
-////////
-// const newSellClickHandler = () => {
-//   const div = document.createElement("div");
-//   const pDate = document.createElement("p");
-//   const pTime = document.createElement("p");
-//   const pPoints = document.createElement("p");
-//   const pDetials = document.createElement("p");
-//   const pWeight = document.createElement("p");
 
-//   div.classList.add("order_info");
 
-//   pDate.innerText = "15/1";
-//   pTime.innerText = "15/1";
-//   pPoints.innerText = "15/1";
-//   pDetials.innerText = "15/1";
-//   pWeight.innerText = "15/1";
 
-//   div.appendChild(pDate);
-//   div.appendChild(pTime);
-//   div.appendChild(pPoints);
-//   div.appendChild(pDetials);
-//   div.appendChild(pWeight);
 
-//   const orderInfo = document.querySelector(".orders_data");
-//   console.log(orderInfo);
-//   orderInfo.appendChild(div);
-// };
-// new_sellBtn.addEventListener("click", newSellClickHandler);
+
+
+
+
+
+
+new_sellBtn.addEventListener("click", ()=>{
+  window.location.href = 'new_sell.html'
+});

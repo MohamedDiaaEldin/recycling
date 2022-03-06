@@ -63,6 +63,39 @@ def get_sell_orders():
 ### end point to create new sell order 
 ## needs jwt and public_id order_data
 
+@app.route('/sell_order', methods=['POST'])
+def sell_order():
+    try:
+        body = request.get_json()
+        if not is_valid_jwt_body(body) or not  SellCategorymatrial.is_valid_request_date(body):
+            return bad_request_handler()
+        
+        # get customer data
+        customer = Customer.query.filter_by(public_id=int(body.get('public_id'))).first()        
+
+        # jwt validation
+        if  not customer or not  is_valid_jwt(app, body.get('jwt'), customer.email):
+            return unauthorized_user_handler()
+
+        body  = body.get('sell_data')
+
+        # ## calculate points depneds on store  TODO 
+        # ## dummy calulations 
+        
+        points = float(body.get('weight')) * 2.5        
+        # # ## add to database
+        # print(points)
+        sell_category_matrial = SellCategorymatrial(matrial_id=int(body.get('matrial_id')), category_id=int(body.get('category_id')) , delivery_id=1, customer_id=customer.id, date=body.get('date'), time=body.get('time'), weight=float(body.get('weight')), points=points, done=False)
+        sell_category_matrial.add()
+
+        
+        return success_request_handler()
+    except:
+        db.session.rollback()
+        print('error while creating new sell order')
+        return server_error_handler()
+
+
 
 
 ### verify end point 

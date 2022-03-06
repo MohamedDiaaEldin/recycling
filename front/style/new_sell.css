@@ -1,0 +1,99 @@
+body{
+    padding: 0;
+    margin: 0;        
+    display: flex;
+    justify-content: center;
+    background-color: #d8d2c9;
+    font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+}
+
+
+
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 3%;
+    width: 70%;
+    background-color: green;    
+    background-color: white;
+    border-radius: 10px;    
+}
+
+form h1{
+    color: #02ec88  ;
+    font-size: 3.2em;
+    margin-top: 7%;    
+}
+form h2{    
+    font-weight: 200;
+}
+.row_container {
+    margin-top: 20px;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+.row_container select{    
+    padding: 10px;    
+    width: 20%;
+    border-radius: 5px;
+    margin-left: 20px;
+    font-size: 1.2em;
+    background-color: white;
+    justify-self: flex-end;
+}
+.row_container p{
+    font-size: 1.5em;
+}
+
+
+
+.row_container input {
+    padding: 10px;    
+    width: 20%;
+    border-radius: 5px;
+    margin-left: 20px;
+    font-size: 1.2em;
+    background-color: white;
+    justify-self: flex-end;
+
+}
+
+
+/*  buttons  */
+.buttons{
+    display: flex;    
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+    
+}
+
+.buttons * {
+    padding: 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin: 30px;
+}
+.buttons #submitBtn{    
+    font-size: 1.7em;
+    background-color: #02ec88;    
+    
+}
+.buttons #submitBtn:hover{
+    background-color: #09aa64;
+}    
+.buttons #cancelBtn{    
+    font-size: 1.4em;
+}
+.buttons #cancelBtn:hover{
+    background-color: #d8d2c9;
+} 
+
+
+
