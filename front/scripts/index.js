@@ -113,8 +113,8 @@ const sellerClickHandler = () => {
   lastAdded = sellerTemplate;
 };
 sellerBtn.addEventListener("click", sellerClickHandler);
-
 sellerBtn.click();
+
 
 //// handel buyer click - how it works
 const buyerClickHandler = () => {
