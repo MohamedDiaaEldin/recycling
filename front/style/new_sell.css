@@ -14,7 +14,7 @@ form{
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: center ;
     margin-top: 3%;
     width: 70%;
     background-color: green;    
@@ -59,10 +59,8 @@ form h2{
     margin-left: 20px;
     font-size: 1.2em;
     background-color: white;
-    justify-self: flex-end;
 
 }
-
 
 /*  buttons  */
 .buttons{
@@ -94,6 +92,3 @@ form h2{
 .buttons #cancelBtn:hover{
     background-color: #d8d2c9;
 } 
-
-
-

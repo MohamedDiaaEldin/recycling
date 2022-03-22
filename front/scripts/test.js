@@ -1,4 +1,5 @@
 import { fetchRequest } from "./FetchRequest.js";
+import { get_day , get_month, get_year} from "./DateTime.js";
 
 // fetchRequest("customer_email", "POST", { email: "mdiaan442@gmail.com" }).then(
 //   (response) => {
@@ -54,3 +55,11 @@ const setHandler = ()=>{
 }
 
 setBtn.addEventListener('click', setHandler)
+
+
+
+
+
+console.log(get_day())
+console.log(get_month())
+console.log(get_year())
