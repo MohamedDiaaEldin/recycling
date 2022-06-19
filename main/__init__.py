@@ -1,8 +1,3 @@
-from asyncio import constants
-from crypt import methods
-import email
-from typing import OrderedDict
-from wsgiref.util import request_uri
 from flask import Flask , jsonify ,request 
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -12,16 +7,23 @@ from message_email import send_email
 import read_env
 from jwt_generator import encode_data, is_valid_jwt 
 
+
+
 app = Flask(__name__)
+
 db = setup_db(app)
 migrate  = Migrate(app=app, db=db)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 app.config['JWT_SECRET'] = read_env.get_value('JWT_SECRET')
 
-
 from error_handler import bad_request_handler, server_error_handler, success_request_handler, unauthorized_user_handler, conflict_error_handler , succes_login_handler
 
+
+
+@app.route('/')
+def index():
+    return 'hi'
 
 
 
@@ -119,40 +121,41 @@ def verify_jwt():
 ## end point recives email and send OTP to email 
 @app.route('/customer_email', methods=['POST'])
 def otp():
-    try:            
-        body = request.get_json() 
-        # request body validation 
-        if not Customer_OTP.is_valid_request_data(body):
-            return bad_request_handler()        
-        email = body.get('email')
+    # try:            
+    body = request.get_json() 
+    # request body validation 
+    print('-------------------->', body)
+    if not Customer_OTP.is_valid_request_data(body):
+        return bad_request_handler()        
+    email = body.get('email')
 
-        # if email aleady siguned up 
-        if Customer.is_email_there(email):            
-            return conflict_error_handler()
-        
-        
-        # generate OTP - oen time password
-        otp  = generateOTP()    
+    # if email aleady siguned up 
+    if Customer.is_email_there(email):            
+        return conflict_error_handler()
+    
+    
+    # generate OTP - one time password
+    otp  = generateOTP()    
 
-        # check if email in customer otp table 
-        customer_otp = Customer_OTP.query.get(email)
-        
-        # if email is stored in database before 
-        if customer_otp != None :
-            # update otp with new one 
-            customer_otp.otp = otp
-            customer_otp.commit_changes()            
-        else:
-            # add OTP with email to database 
-            customer = Customer_OTP(email=email, otp=otp)        
-            customer.add()
-                
-        ## send email with otp
-        send_email(to=email, message='OTP is ' + otp, subject='Bikya OTP')
-        return success_request_handler()
-    except : 
-        print('error in otp generator end point')
-        return server_error_handler()
+    # check if email in customer otp table 
+    customer_otp = Customer_OTP.query.get(email)
+    
+    # if email is stored in database before 
+    if customer_otp != None :
+        # update otp with new one 
+        customer_otp.otp = otp
+        customer_otp.commit_changes()            
+    else:
+        # add OTP with email to database 
+        customer = Customer_OTP(email=email, otp=otp)        
+        customer.add()
+            
+    ## send email with otp
+    send_email(to=email, message='OTP is ' + otp, subject='Bikya OTP')
+    return success_request_handler()
+    # except : 
+    #     print('error in otp generator end point')
+    #     return server_error_handler()
     
 
 
