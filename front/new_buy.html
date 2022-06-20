@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>new buy order</title>
+    <link rel="stylesheet" href="./style/new_sell.css" />
+    <script src="./scripts/new_sell.js" type="module" defer></script>
+    
+  </head>
+
+  <!--
+            matrial - drop  down list 
+
+            category - drop  down list 
+
+            calender      weight in kg
+
+         -->
+
+  <body>
+    <form action="">
+      <!-- <label for="cars">Complete</label> -->
+      <h1>Bikya</h1>
+      <h2>select order details</h2>
+
+      <div class="row_container">
+        <!-- <p>Material</p> -->
+        <select name="matrials" id="matrials"></select>
+      </div>
+
+      <div class="row_container">
+        <!-- <p>Category</p> -->
+        <select name="categories" id="categories"></select>
+      </div>
+      <div class="row_container">
+        <!-- <p>Date</p> -->
+        <input type="date" id="date_input" />
+      </div>
+
+      <div class="row_container">
+        <!-- <p>Time</p> -->
+        <input type="time" id="time_input" >
+      </div>
+
+      <div class="row_container">
+        <!-- <p>weight</p> -->
+        <input type="number " id="weigth_input" placeholder="weight in kg" />
+      </div>
+
+      <div class="buttons">
+        <a id="cancelBtn" href="#">Cancel</a>
+        <a id="submitBtn" href="#">Submit Order</a>
+      </div>
+    </form>
+  </body>
+</html>

@@ -5,24 +5,12 @@ const logoutBtn = document.getElementById("logoutBtn");
 const homeBtn = document.getElementById("home");
 const activeBtn = document.getElementById("activeBtn");
 const allBtn = document.getElementById("allBtn");
-const seller_state = true;
+const switch_btn = document.getElementById("switchBtn");
+const total_points = document.getElementById('total_points')
+const jwt = window.localStorage.jwt;
+const public_id = window.localStorage.public_id;
 
 
-
-/*
-          <div class="order_info">
-            <p>15 / 1</p>
-            <p>3:30</p>
-            <p>10</p>
-            <p>plastic-bottle</p>
-            <p>2.5</p>
-          </div>
-*/
-
-const clear_credentials = () => {
-  window.localStorage.jwt = "";
-  window.localStorage.public_id = "";
-};
 
 const display_orders = (all_order_data, active = false) => {
   // display points
@@ -34,7 +22,7 @@ const display_orders = (all_order_data, active = false) => {
     if (active) {
       if (order.done === false) {
         display_order(order);
-      }      
+      }
     } else {
       display_order(order);
     }
@@ -86,7 +74,7 @@ const fetch_seller_data = (data) => {
       if (json_data.status_code === 200) {
         // save all orders in local storage
         // localStorage.sell_orders = json_data;        
-        localStorage.sell_orders = JSON.stringify(json_data);        
+        localStorage.sell_orders = JSON.stringify(json_data);
         activeBtn.click()
       }
     })
@@ -102,25 +90,9 @@ const fetch_seller_data = (data) => {
     });
 };
 
-//   handel orders state
-const jwt = window.localStorage.jwt;
-const public_id = window.localStorage.public_id;
-if (jwt === "" || public_id === "") {
-  window.location.href = "login.html";
-}
 
-const data = { jwt: jwt, public_id: public_id };
-if (seller_state) {
-  fetch_seller_data(data);
-  console.log("jwt and seller ");
-} else {
-  // TODO
-  console.log("jwt and buyer ");
-  // getJwt_data(jwt, 'buyer')
-  // if not valid jwt:
-  //       go to login page
-  /// display data
-}
+
+
 
 const logoutClickHandler = () => {
   clear_credentials();
@@ -134,22 +106,91 @@ const homeClickHandler = () => {
 logoutBtn.addEventListener("click", logoutClickHandler);
 homeBtn.addEventListener("click", homeClickHandler);
 
-new_sellBtn.addEventListener("click", () => {
-  window.location.href = "new_sell.html";
-});
 
 
 
-const remove_orders_children = ()=>{
-  for (const elemen of document.querySelectorAll('.order_child')){
+
+const remove_orders_children = () => {
+  for (const elemen of document.querySelectorAll('.order_child')) {
     elemen.remove()
   }
 }
-activeBtn.addEventListener('click', ()=>{
+activeBtn.addEventListener('click', () => {
   remove_orders_children()
-    display_orders(JSON.parse(localStorage.sell_orders), true)
+  display_orders(JSON.parse(localStorage.sell_orders), true)
 })
-allBtn.addEventListener('click', ()=>{
+allBtn.addEventListener('click', () => {
   remove_orders_children()
   display_orders(JSON.parse(localStorage.sell_orders), false)
 })
+
+
+const clear_credentials = () => {
+  window.localStorage.jwt = "";
+  window.localStorage.public_id = "";
+};
+
+
+///////////////////////////////
+
+
+const change_buyer_ui = () => {
+  new_sellBtn.textContent = 'new buy order'
+  switch_btn.textContent = 'switch to seller'
+  total_points.style.display = 'none'
+
+}
+const change_seller_ui = () => {
+  new_sellBtn.textContent = 'new sell order'
+  switch_btn.textContent = 'switch to buyer'
+  total_points.style.display = 'block'
+}
+
+const handel_seller = () => {
+  change_seller_ui()
+  new_sellBtn.addEventListener('click', () => {
+    window.location.href = "new_sell.html"
+  })
+}
+const handel_buyer = () => {
+  change_buyer_ui()
+  new_sellBtn.addEventListener('click', () => {
+    window.location.href = "new_buy.html"
+  })
+}
+
+switch_btn.addEventListener('click', () => {
+  const type = typeof localStorage.seller_state
+  console.log('type is ', type)
+  if (type === typeof (undefined) || localStorage.seller_state === 'true') {
+    console.log('sellercurrent is seller')
+    localStorage.seller_state = false
+    window.location.href = "orders.html"
+  }
+  else{
+    localStorage.seller_state = true
+    window.location.href = "orders.html"
+  }
+
+})
+if (jwt === "" || public_id === "") {
+  window.location.href = "login.html";
+}
+const data = { jwt: jwt, public_id: public_id }
+
+console.log(localStorage.seller_state)
+
+
+// handel buyer and seller state
+
+const type = typeof localStorage.seller_state
+console.log('type is ', type)
+  
+if (type === typeof (undefined) || localStorage.seller_state === 'true') {
+  handel_seller()
+  fetch_seller_data(data)
+}
+else {
+  handel_buyer()
+  // fetch buyer data
+}

@@ -106,7 +106,6 @@ def verify_jwt():
     body  = request.get_json() 
     if not is_valid_jwt_body(body):
         return bad_request_handler()            
-
     try:                
         customer = Customer.query.filter_by(public_id=int(body.get('public_id'))).first()
         if customer and is_valid_jwt(app, body.get('jwt'), customer.email):
