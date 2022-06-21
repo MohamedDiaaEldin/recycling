@@ -19,3 +19,8 @@
      $ export FLASK_APP=main
      $ flask run 
     </pre>
+
+
+## Notes 
+-  JWT implementaion needs update since it call database every time 
+  
