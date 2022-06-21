@@ -1,8 +1,7 @@
-
 from flask import Flask , jsonify ,request 
 from flask_migrate import Migrate
 from flask_cors import CORS
-from models import setup_db , Customer , Matrial, Category , MatrialCategory, WaitingCategory , SellCategorymatrial, Delivery , Customer_OTP , PublicIdAuto
+from models import setup_db , Customer , Matrial, Category , MatrialCategory, WaitingCategory , SellCategorymatrial, Delivery , Customer_OTP , PublicIdAuto, BuyCategoryMatrial
 from otp import generateOTP
 from message_email import send_email
 import read_env
@@ -32,17 +31,53 @@ def is_valid_jwt_body(body):
     return body and 'jwt' in body and 'public_id' in body
 
 
-'''
 
-recive public_id 
-jwt
-weight 
-matrial_id 
-categoy_id
-''' 
 
 def is_valid_buy_confirm(body):
     return body and 'weight' in body and body and 'matrial_id' in body and 'category_id' in body 
+
+def is_valid_buy_order_body(body):
+    return body and 'weight' in body and body and 'matrial_id' in body and 'category_id' in body and "date" in body and 'time'  in body
+
+'''
+
+public_id 
+weight 
+jwt
+categoy_id
+matrial_id 
+date 
+time
+''' 
+
+@app.route('/buy_order', methods=['POST'])
+def buy_order():
+    body = request.get_json()
+    ## request body validation
+    if not is_valid_jwt_body(body):
+        return bad_request_handler()
+            # get customer data
+    customer = Customer.query.filter_by(public_id=int(body.get('public_id'))).first()        
+
+    # jwt validation
+    if  not customer or not  is_valid_jwt(app, body.get('jwt'), customer.email):
+        return unauthorized_user_handler()
+
+    ## check if valid confirm body 
+    if not is_valid_buy_order_body(body):        
+        return bad_request_handler()
+    
+    category_matrial = MatrialCategory.query.filter_by(matrial_id=body.get('matrial_id') ,  category_id=body.get('category_id')).first()    
+    new_buy_order = BuyCategoryMatrial(matrial_id=body.get('matrial_id'), category_id=body.get('category_id'), customer_id=customer.id, date=body.get('date'), time=body.get('time'), weight=body.get('weight'), price=category_matrial.km_price * body.get('weight') , done=False)
+    new_buy_order.add()    
+    
+    category_matrial.total_weight = category_matrial.total_weight - body.get('weight')
+    category_matrial.update()
+    
+    return jsonify({
+        'status_code':200,
+        "message":"success"
+    })
 
 
 
@@ -61,7 +96,6 @@ def confirm_buy():
 
     ## check if valid confirm body 
     if not is_valid_buy_confirm(body):
-        print('not valid')
         return bad_request_handler()
     
     wanted_weight  = body.get('weight')

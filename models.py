@@ -189,7 +189,8 @@ class MatrialCategory(db.Model):
     def add(self):
         add(self)
 
-
+    def update(self):
+        db.session.commit()
 
 class BuyCategoryMatrial(db.Model):
     id = Column(Integer, primary_key=True)
