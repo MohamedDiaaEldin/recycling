@@ -1,3 +1,4 @@
+
 from flask import Flask , jsonify ,request 
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -31,8 +32,70 @@ def is_valid_jwt_body(body):
     return body and 'jwt' in body and 'public_id' in body
 
 
+'''
 
-### 
+recive public_id 
+jwt
+weight 
+matrial_id 
+categoy_id
+''' 
+
+def is_valid_buy_confirm(body):
+    return body and 'weight' in body and body and 'matrial_id' in body and 'category_id' in body 
+
+
+
+@app.route('/confirm_buy', methods=['POST'])
+def confirm_buy():
+    body = request.get_json()
+    ## request body validation
+    if not is_valid_jwt_body(body):
+        return bad_request_handler()
+            # get customer data
+    customer = Customer.query.filter_by(public_id=int(body.get('public_id'))).first()        
+
+    # jwt validation
+    if  not customer or not  is_valid_jwt(app, body.get('jwt'), customer.email):
+        return unauthorized_user_handler()
+
+    ## check if valid confirm body 
+    if not is_valid_buy_confirm(body):
+        print('not valid')
+        return bad_request_handler()
+    
+    wanted_weight  = body.get('weight')
+    matrial_id  = body.get('matrial_id')
+    category_id  = body.get('category_id')
+    
+    category_matrial = MatrialCategory.query.filter_by(matrial_id=matrial_id ,  category_id=category_id).first()
+    
+    ## if weight is avaliable 
+    if wanted_weight <= category_matrial.total_weight :
+        return jsonify({
+            'status_code':200, 
+            'price':category_matrial.km_price * wanted_weight,            
+        })
+    
+    ## if wait not avaliable
+    return jsonify({
+        'status_code':200,
+        'message':'not found'        
+    })
+
+
+        
+    
+    # for d in data :
+    #     print(d.category_id)
+    #     print(d.matrial_id)
+    #     print(d.km_price)
+    #     print(d.total_weight)
+    #     print(d.km_points)
+    #     print('')
+    
+    
+    return "ok"
 
 
 

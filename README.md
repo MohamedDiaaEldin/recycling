@@ -22,5 +22,5 @@
 
 
 ## Notes 
--  JWT implementaion needs update since it call database every time 
-  
+-  JWT implementation needs update since it call database every time 
+-  update backend with MVC pattern 
