@@ -21,6 +21,6 @@
     </pre>
 
 
-## Notes 
+## suggestion - next step  
 -  JWT implementation needs update since it call database every time 
 -  update backend with MVC pattern 
