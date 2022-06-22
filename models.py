@@ -127,6 +127,7 @@ class Delivery(db.Model):
 class Category(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
+    
     matrialCategories = relationship("MatrialCategory")
     
     @staticmethod
@@ -203,6 +204,24 @@ class BuyCategoryMatrial(db.Model):
     price =  Column(Float, nullable=False)
     done =  Column(Boolean, nullable=False)
  
+    @staticmethod
+    def get_orders(customer):
+        buy_orders = BuyCategoryMatrial.query.filter_by(customer_id=customer.id).all()
+        all_orders = []
+        for buy_order in buy_orders:    
+            category = Category.query.get(buy_order.category_id)
+            matrial = Matrial.query.get(buy_order.matrial_id)            
+            order_details = f"{category.name} - {matrial.name}"                
+            order_data = {
+                'date' : buy_order.date,
+                'time' : buy_order.time,
+                'weight' : buy_order.weight,
+                'price' : buy_order.price,
+                'order_detials' : order_details,
+                'done' : buy_order.done
+            }             
+            all_orders.append(order_data)
+        return all_orders
 
     def add(self):
         add(self)
