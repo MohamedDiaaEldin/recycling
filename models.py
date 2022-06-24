@@ -240,11 +240,12 @@ class SellCategorymatrial(db.Model):
 
 
     @staticmethod
-    def is_valid_request_date(body):
+    def is_valid_request_data(body):
         if body and 'sell_data' in body:
             body = body.get('sell_data')
             return 'category_id' in body and 'matrial_id' in body and 'date' in body and 'time' in body and 'weight' in body
         return False
+
 
     @staticmethod
     def get_orders(customer):

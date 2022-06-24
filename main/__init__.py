@@ -1,5 +1,4 @@
 
-from unicodedata import category
 from flask import Flask , jsonify ,request 
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -22,16 +21,24 @@ app.config['JWT_SECRET'] = read_env.get_value('JWT_SECRET')
 
 from error_handler import bad_request_handler, server_error_handler, success_request_handler, unauthorized_user_handler, conflict_error_handler , succes_login_handler
 
-def is_valid_jwt_body(body):
+
+## jwt and publlic id validation 
+def is_valid_jwt_body(body):    
     return body and 'jwt' in body and 'public_id' in body
 
+
+## /confirm_but request validation
 def is_valid_buy_confirm(body):
     return body and 'weight' in body and body and 'matrial_id' in body and 'category_id' in body 
 
+
+## /bur_order request validation 
 def is_valid_buy_order_body(body):
     return body and 'weight' in body and body and 'matrial_id' in body and 'category_id' in body and "date" in body and 'time'  in body
 
 
+
+## create buy order 
 @app.route('/buy_order', methods=['POST'])
 def buy_order():
     body = request.get_json()
@@ -67,8 +74,9 @@ def buy_order():
     new_buy_order = BuyCategoryMatrial(matrial_id=body.get('matrial_id'), category_id=body.get('category_id'), customer_id=customer.id, date=body.get('date'), time=body.get('time'), weight=body.get('weight'), price=category_matrial.km_price * body.get('weight') , done=False)
     new_buy_order.add()    
     
-    category_matrial.total_weight = category_matrial.total_weight - body.get('weight')
-    category_matrial.update()
+    ## TODO make end point to reduce weight when client comes and take his order 
+    # category_matrial.total_weight = category_matrial.total_weight - body.get('weight')
+    # category_matrial.update()
     
     return jsonify({
         'status_code':200,
@@ -76,23 +84,23 @@ def buy_order():
     })
 
 
+## confirm weight 
 @app.route('/confirm_buy', methods=['POST'])
 def confirm_buy():
     body = request.get_json()
+    
     ## request body validation
-    if not is_valid_jwt_body(body):
+    if not is_valid_jwt_body(body) or not is_valid_buy_confirm(body):
         return bad_request_handler()
             # get customer data
+        
     customer = Customer.query.filter_by(public_id=int(body.get('public_id'))).first()        
 
     # jwt validation
     if  not customer or not  is_valid_jwt(app, body.get('jwt'), customer.email):
         return unauthorized_user_handler()
 
-    ## check if valid confirm body 
-    if not is_valid_buy_confirm(body):
-        return bad_request_handler()
-    
+  
     wanted_weight  = body.get('weight')
     matrial_id  = body.get('matrial_id')
     category_id  = body.get('category_id')
@@ -100,8 +108,7 @@ def confirm_buy():
     category_matrial = MatrialCategory.query.filter_by(matrial_id=matrial_id ,  category_id=category_id).first()
     
     ## if weight is avaliable 
-    if wanted_weight <= category_matrial.total_weight :
-        
+    if wanted_weight <= category_matrial.total_weight :        
         return jsonify({
             'status_code':200, 
             'price':category_matrial.km_price * wanted_weight,            
@@ -179,42 +186,47 @@ def get_sell_orders():
 ## needs jwt and public_id order_data
 @app.route('/sell_order', methods=['POST'])
 def sell_order():
-    # try:
-    body = request.get_json()
-    
-    if not is_valid_jwt_body(body) or not  SellCategorymatrial.is_valid_request_date(body):
-        return bad_request_handler()
-    
-    # get customer data
-    customer = Customer.query.filter_by(public_id=int(body.get('public_id'))).first()
+    try:
+   
+        body = request.get_json()
+        
+        ## if there is no validation and sell order data
+        if not is_valid_jwt_body(body) or not  SellCategorymatrial.is_valid_request_data(body):        
+            return bad_request_handler()
+                
+        # get customer data where public_id = comming public_id
+        customer = Customer.query.filter_by( public_id = int( body.get('public_id') ) ).first()
+        
+        # jwt validation
+        if  not customer or not  is_valid_jwt(app, body.get('jwt'), customer.email):
+            return unauthorized_user_handler()
 
-    # jwt validation
-    if  not customer or not  is_valid_jwt(app, body.get('jwt'), customer.email):
-        return unauthorized_user_handler()
-
-    body  = body.get('sell_data')
-    
-    ## get km points 
-    category_matrial = MatrialCategory.query.filter_by(matrial_id=body.get('matrial_id'), category_id=body.get('category_id')).first()        
-    points = float(body.get('weight')) * category_matrial.km_points       
-    
-    ## add to database        
-    sell_category_matrial = SellCategorymatrial(matrial_id=int(body.get('matrial_id')), category_id=int(body.get('category_id')) , delivery_id=1, customer_id=customer.id, date=body.get('date'), time=body.get('time'), weight=float(body.get('weight')), points=points, done=False)
-    sell_category_matrial.add()
-    
-    # update customer total points 
-    customer.points += points
-    
-    
-    ## update total weight in the store 
-    category_matrial.total_weight =  category_matrial.total_weight + float(body.get('weight'))
-    category_matrial.update()
-    
-    return success_request_handler()
-    # except:
-    #     db.session.rollback()
-    #     print('error while creating new sell order')
-    #     return server_error_handler()
+        body  = body.get('sell_data')
+        
+        ## get km points 
+        category_matrial = MatrialCategory.query.filter_by(matrial_id=body.get('matrial_id'), category_id=body.get('category_id')).first()        
+        points = float(body.get('weight')) * category_matrial.km_points       
+        
+        ## add sell order to database        
+        sell_category_matrial = SellCategorymatrial(matrial_id=int(body.get('matrial_id')), category_id=int(body.get('category_id')) , delivery_id=1, customer_id=customer.id, date=body.get('date'), time=body.get('time'), weight=float(body.get('weight')), points=points, done=False)
+        sell_category_matrial.add()
+        
+        
+        ## TODO update when delivery comes 
+        # update customer total points 
+        # customer.points += points
+        
+        
+        ## update total weight in the store 
+        ## TODO - remove this step 
+        # category_matrial.total_weight =  category_matrial.total_weight + float(body.get('weight'))
+        # category_matrial.update()
+        
+        return success_request_handler()
+    except:
+        db.session.rollback()
+        print('error while creating new sell order')
+        return server_error_handler()
 
 
 
@@ -238,41 +250,41 @@ def verify_jwt():
 ## end point recives email and send OTP to email 
 @app.route('/customer_email', methods=['POST'])
 def otp():
-    # try:            
-    body = request.get_json() 
-    # request body validation 
- 
-    if not Customer_OTP.is_valid_request_data(body):
-        return bad_request_handler()        
-    email = body.get('email')
+    try:            
+        body = request.get_json() 
+        # request body validation 
+    
+        if not Customer_OTP.is_valid_request_data(body):
+            return bad_request_handler()        
+        email = body.get('email')
 
-    # if email aleady siguned up 
-    if Customer.is_email_there(email):            
-        return conflict_error_handler()
-    
-    
-    # generate OTP - one time password
-    otp  = generateOTP()    
+        # if email aleady siguned up 
+        if Customer.is_email_there(email):            
+            return conflict_error_handler()
+        
+        
+        # generate OTP - one time password
+        otp  = generateOTP()    
 
-    # check if email in customer otp table 
-    customer_otp = Customer_OTP.query.get(email)
-    
-    # if email is stored in database before 
-    if customer_otp != None :
-        # update otp with new one 
-        customer_otp.otp = otp
-        customer_otp.commit_changes()            
-    else:
-        # add OTP with email to database 
-        customer = Customer_OTP(email=email, otp=otp)        
-        customer.add()
-            
-    ## send email with otp
-    send_email(to=email, message='OTP is ' + otp, subject='Bikya OTP')
-    return success_request_handler()
-    # except : 
-    #     print('error in otp generator end point')
-    #     return server_error_handler()
+        # check if email in customer otp table 
+        customer_otp = Customer_OTP.query.get(email)
+        
+        # if email is stored in database before 
+        if customer_otp != None :
+            # update otp with new one 
+            customer_otp.otp = otp
+            customer_otp.commit_changes()            
+        else:
+            # add OTP with email to database 
+            customer = Customer_OTP(email=email, otp=otp)        
+            customer.add()
+                
+        ## send email with otp
+        send_email(to=email, message='OTP is ' + otp, subject='Bikya OTP')
+        return success_request_handler()
+    except : 
+        print('error in otp generator end point')
+        return server_error_handler()
     
 
 

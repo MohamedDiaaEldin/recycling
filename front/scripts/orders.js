@@ -184,25 +184,18 @@ logoutBtn.addEventListener("click", logoutClickHandler);
 homeBtn.addEventListener("click", homeClickHandler);
 
 
-
-
-
 const remove_orders_children = () => {
   for (const elemen of document.querySelectorAll('.order_child')) {
     elemen.remove()
   }
 }
 
-
-
 const clear_credentials = () => {
   window.localStorage.jwt = "";
   window.localStorage.public_id = "";
 };
 
-
 ///////////////////////////////
-
 
 const change_buyer_ui = () => {
   new_sellBtn.textContent = 'new buy order'
@@ -220,6 +213,7 @@ const change_seller_ui = () => {
 
 const handel_seller = () => {
   change_seller_ui()
+
   new_sellBtn.addEventListener('click', () => {
     window.location.href = "new_sell.html"
   })
@@ -233,8 +227,7 @@ const handel_seller = () => {
     remove_orders_children()
     display_sell_orders(JSON.parse(localStorage.sell_orders), false)
   })
-
-
+  
 }
 const handel_buyer = () => {
   change_buyer_ui()
@@ -252,6 +245,7 @@ const handel_buyer = () => {
 }
 
 switch_btn.addEventListener('click', () => {
+
   const type = typeof localStorage.seller_state
   console.log('type is ', type)
   if (type === typeof (undefined) || localStorage.seller_state === 'true') {

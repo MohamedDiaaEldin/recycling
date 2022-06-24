@@ -88,9 +88,6 @@ const submitClickHandler = () => {
         "sell_data" : sell_order_data
     }
     
-    console.log(data)
-
-    
 
     fetchRequest('sell_order', 'POST', data, false).then( response =>{
         if (!response.ok){
