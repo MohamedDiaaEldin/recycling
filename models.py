@@ -44,7 +44,13 @@ class Customer_OTP(db.Model):
     def is_valid_otp_request_data(body):
         return body != None and 'email' in body and 'otp' in body 
 
-
+class Admin(db.Model):    
+    ## fields
+    id = Column(Integer, primary_key=True) # outo increment        
+    email = Column(String, nullable=False)
+    password = Column(String, nullable=False)
+    
+    
 
 class Customer(db.Model):
     __tablename__ = 'customer'
