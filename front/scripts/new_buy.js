@@ -4,6 +4,7 @@ import { hideModal, showConfirmPrice } from "./Modal.js";
 const error_p = document.getElementById('error')
 const categoriesSelect = document.getElementById("categories");
 const matrialsSelect = document.getElementById("matrials");
+const zonesSelect = document.getElementById("zones");
 //inputs 
 const dateInput = document.getElementById('date_input')
 const timeInput = document.getElementById('time_input')
@@ -25,11 +26,13 @@ const addCategory = (item, selected) => {
     selected.appendChild(option);
 };
 
+
 const addCategories = (selectedItems, selected) => {
     for (const category of selectedItems) {
         addCategory(category, selected);
     }
 };
+
 
 /// main script
 // fetch and display categories
@@ -66,6 +69,8 @@ fetchRequest("matrials", "GET", undefined, false)
         console.log(error);
     });
 
+
+
 const get_selected = (selected) => {
     return selected.options[selected.selectedIndex]
 }
@@ -80,8 +85,10 @@ const buy_order_handler = () => {
         "time": timeInput.value,
         "category_id": parseInt(categoriesSelect.options[categoriesSelect.selectedIndex].value),
         "matrial_id": parseInt(matrialsSelect.options[matrialsSelect.selectedIndex].value),
+
         "weight": parseInt(weightInput.value)
     }
+
     fetchRequest('buy_order', 'POST', data, false).then(response => {
         if (!response.ok) {
             throw new Error(response.status)

@@ -97,39 +97,28 @@ class WaitingCategory(db.Model):
 '''
 NOTE  change to many  Deto many between SellOrder andlivery 
 '''
-class Delivery(db.Model):
+
+class Zone(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
-    address = Column(String, nullable=False)
-    phone = Column(String, nullable=False)    
+      
+    @staticmethod
+    def get_json_zones(zones):
+        list = []
+        for zone in zones:
+            list.append(zone.get_zone())    
+        return jsonify({
+            'zones' : list, 
+            'length': len(list),
+            'status_code':200
+            }), 200
 
-    def add(self):
-        add(self)
-
-
-# for delivery page - needs admin
-# class SellOrder(db.Model):
-#     id = Column(Integer, primary_key=True)    
-#     sell_category_matrial_id = Column(Integer, ForeignKey('sell_categorymatrial.id'))
-#     delivery_id = Column(Integer, ForeignKey('delivery.id'))    
-
-#     def add(self):
-#         add(self)
-
-
-# class BuyOrder(db.Model):
-#     id = Column(Integer, primary_key=True)            
-#     buy_category_matrial = Column(Integer, ForeignKey('buy_category_matrial.id')) 
-
-#     def add(self):
-#         add(self)
-
-class Category(db.Model):
-    id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
-    
-    matrialCategories = relationship("MatrialCategory")
-    
+    def get_zone(self) :
+        return {
+            'id' : self.id, 
+            'name' : self.name
+        }
+        
     @staticmethod
     def get_json_categories(categories):
         list = []
@@ -140,12 +129,48 @@ class Category(db.Model):
             'length': len(list),
             'status_code':200
             }), 200
+    
+    def add(self):
+        add(self)
+        
+class Delivery(db.Model):
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)    
+    phone = Column(String, nullable=False)
+    email = Column(String, nullable=False)
+    password = Column(String, nullable=False)
+    zone_id = Column(Integer, ForeignKey('zone.id'))
 
+
+    def add(self):
+        add(self)
+
+
+
+class Category(db.Model):
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
+    
+    matrialCategories = relationship("MatrialCategory")
+            
+    @staticmethod
+    def get_json_categories(categories):
+        list = []
+        for category in categories:
+            list.append(category.get_category())    
+        return jsonify({
+            'categories' : list, 
+            'length': len(list),
+            'status_code':200
+            }), 200
+        
+        
     def get_category(self) :
         return {
             'id' : self.id, 
             'name' : self.name
         }
+
     def add(self):
         add(self)
 
@@ -192,6 +217,9 @@ class MatrialCategory(db.Model):
 
     def update(self):
         db.session.commit()
+    delivery_id = Column(Integer, ForeignKey('delivery.id'))
+    delivery_id = Column(Integer, ForeignKey('delivery.id'))
+    delivery_id = Column(Integer, ForeignKey('delivery.id'))
 
 class BuyCategoryMatrial(db.Model):
     id = Column(Integer, primary_key=True)

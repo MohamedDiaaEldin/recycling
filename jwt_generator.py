@@ -11,7 +11,6 @@ def encode_data(app, payload):
 def decode_token(app , token):    
     return jwt.decode(token, app.config['JWT_SECRET'], algorithms='HS256')
 
-
 # verify jwt 
 def is_valid_jwt(app, jwt, email):
     try:
@@ -19,5 +18,4 @@ def is_valid_jwt(app, jwt, email):
         return payload['data'] == email
     except:
         return False
-
 
