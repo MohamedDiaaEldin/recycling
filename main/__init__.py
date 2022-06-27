@@ -1,10 +1,10 @@
 
+
 from crypt import methods
-import email
 from flask import Flask , jsonify ,request 
 from flask_migrate import Migrate
 from flask_cors import CORS
-from models import setup_db , Customer , Matrial, Category , MatrialCategory , SellCategorymatrial, Delivery , Customer_OTP , PublicIdAuto, BuyCategoryMatrial, Zone
+from models import Admin, setup_db , Customer , Matrial, Category , MatrialCategory , SellCategorymatrial, Delivery , Customer_OTP , PublicIdAuto, BuyCategoryMatrial, Zone
 from otp import generateOTP
 from message_email import send_email
 import read_env
@@ -69,6 +69,132 @@ def is_valid_sell_confirm_body(body):
 #### ENDPOINTS
 
 
+# get all active orders with total sell orders length
+@app.route('/sell_active_orders', methods=['POST'])
+def get_active_sell_orders():
+    try:
+        body = request.get_json()
+        ## request body validation
+        if not is_valid_jwt_body(body):
+            return bad_request_handler()
+
+        # get customer data
+        admin = Admin.query.filter_by(id=int(body.get('public_id'))).first()        
+
+        # jwt validation
+        if  not admin or not  is_valid_jwt(app, body.get('jwt'), admin.email):
+            return unauthorized_user_handler()
+
+        sell_orders = SellCategorymatrial.query.all()
+        all_counter = 0 
+        active_orders = []
+
+        for order in sell_orders:
+            if order.done == True:
+                all_counter  += 1 
+                continue
+            weight = order.weight
+            time  =order.time
+            date = order.date
+            order_details = f'{ Category.query.get(order.category_id).name } - {Matrial.query.get(order.matrial_id).name }'            
+            ## customer data
+            customer = Customer.query.get(order.customer_id)
+            customer_name = f'{customer.first_name} {customer.last_name}'
+            customer_phone = customer.phone
+            customer_location = customer.address
+            ## get delivery data
+            delivery = Delivery.query.get(order.delivery_id)
+            delivery_name = delivery.name
+            delivery_phone = delivery.phone
+            delivery_number = delivery.id  
+            data = {
+                'customer_location':customer_location,
+                'details':order_details,
+                'weight':weight,
+                'time':time,
+                'date':date,
+                'customer_name':customer_name,
+                'customer_phone':customer_phone,
+                'delivery_name':delivery_name,
+                'delivery_phone':delivery_phone,
+                'delivery_number':delivery_number
+            }
+            all_counter += 1 
+            active_orders.append(data)
+            
+        return jsonify({
+            "active_orders":active_orders,
+            "length":all_counter
+        })
+    except:
+        return server_error_handler()
+
+
+## get all active buy orders with total buy orders length
+@app.route('/buy_active_orders', methods=['POST'])
+def get_active_buy_orders():
+    try:
+        body = request.get_json()
+        ## request body validation
+        if not is_valid_jwt_body(body):
+            return bad_request_handler()
+
+        # get customer data
+        admin = Admin.query.filter_by(id=int(body.get('public_id'))).first()        
+
+        # jwt validation
+        if  not admin or not  is_valid_jwt(app, body.get('jwt'), admin.email):
+            return unauthorized_user_handler()
+
+        ## get all cuy orders 
+        buy_orders = BuyCategoryMatrial.query.all()
+        all_counter =  0
+        active_orders = []
+        for order in buy_orders:
+            if order.done == True:
+                all_counter += 1
+                continue
+                
+            weight=order.weight
+            price=order.price
+            time=order.time
+            date = order.date
+            order_details = f'{ Category.query.get(order.category_id).name } - {Matrial.query.get(order.matrial_id).name }'            
+            ## get customer data 
+            customer = Customer.query.get(order.customer_id)
+            customer_name = f'{customer.first_name} {customer.last_name}'
+            customer_phone = customer.phone
+            ## 
+            data = {
+                'weight':weight,                
+                'price':price,            
+                'time':time,            
+                'date':date,            
+                'details':order_details,            
+                'customer_name':customer_name,            
+                'customer_phone':customer_phone,            
+            }            
+            active_orders.append(data)
+            all_counter += 1 
+        
+        return jsonify({
+            'active_buy_orders':active_orders,
+            'total_length':all_counter
+        })
+    except:
+        return bad_request_handler()
+
+@app.route('/customers')
+def get_total_customers():
+    try:
+        customers = Customer.query.all()
+        return jsonify({
+            "status_code":200,
+            "length":len(customers)
+        })
+    except:
+        return bad_request_handler()
+
 @app.route('/confirm_sell_order')
 def confirm_sell_order():
     try:        
@@ -109,9 +235,15 @@ def confirm_sell_order():
         ## update total points 
         customer = Customer.query.get(sell_order.customer_id)
         
-        customer.points += int(weight) * int( category_matrial.km_points )
-
+        points = int(weight) * int( category_matrial.km_points )
+        ## update customer points
+        customer.points += points
         customer.commit()
+        
+        # update sell order points
+        sell_order.points = points
+        sell_order.commit()
+        
         
         return success_request_handler()
     except:
@@ -203,6 +335,29 @@ def delivery_login():
         
     except:
         return server_error_handler()
+    
+## admin login
+@app.route('/admin_login', methods=['POST'])
+def admin_login():
+    try:
+        body = request.get_json()    
+               
+        if  not Customer.is_valid_login_data(body):
+            return bad_request_handler()
+
+        ## validate delivey 
+        delivery = Admin.query.filter_by(email=body.get('email')).first()
+        if not delivery or delivery.password != body.get('password'): 
+            return unauthorized_user_handler()
+                 
+        # if valid user
+        public_id = str(delivery.id)                
+        # generate jwt with email
+        jwt = encode_data(app , delivery.email)
+        return succes_login_handler(jwt, public_id)
+        
+    except:
+        return server_error_handler()
 
         
 ## get all buy orders
@@ -266,53 +421,6 @@ def get_sell_orders():
         return server_error_handler()
         
 
-### create new sell order 
-## needs jwt and public_id order_data
-@app.route('/sell_order', methods=['POST'])
-def sell_order():
-    try:
-        body = request.get_json()
-        
-        ## if there is no validation and sell order data
-        if not is_valid_jwt_body(body) or not  SellCategorymatrial.is_valid_request_data(body):        
-            return bad_request_handler()
-                
-        # get customer data where public_id = comming public_id
-        customer = Customer.query.filter_by( public_id = int( body.get('public_id') ) ).first()
-        
-        # jwt validation
-        if  not customer or not  is_valid_jwt(app, body.get('jwt'), customer.email):
-            return unauthorized_user_handler()
-
-        body  = body.get('sell_data')
-        
-        ## get km points 
-        category_matrial = MatrialCategory.query.filter_by(matrial_id=body.get('matrial_id'), category_id=body.get('category_id')).first()        
-        points = float(body.get('weight')) * category_matrial.km_points       
-        
-        selected_deliver = Delivery.query.filter_by(zone_id=int(body.get('zone_id'))).first()
-    
-        ## add sell order to database        
-        sell_category_matrial = SellCategorymatrial(matrial_id=int(body.get('matrial_id')), category_id=int(body.get('category_id')) , delivery_id=selected_deliver.id, customer_id=customer.id, date=body.get('date'), time=body.get('time'), weight=float(body.get('weight')), points=points, done=False)
-        sell_category_matrial.add()
-        
-        
-        
-        ## TODO update when delivery comes 
-        # update customer total points 
-        # customer.points += points
-        
-        
-        ## update total weight in the store 
-        ## TODO - remove this step 
-        # category_matrial.total_weight =  category_matrial.total_weight + float(body.get('weight'))
-        # category_matrial.update()
-        
-        return success_request_handler()
-    except:
-        db.session.rollback()
-        print('error while creating new sell order')
-        return server_error_handler()
 
 
 ### verify end point 
@@ -370,8 +478,7 @@ def otp():
     except : 
         print('error in otp generator end point')
         return server_error_handler()
-    
-
+  
 ## end point to verify OTP
 ## recives email and OTP
 @app.route('/customer_otp', methods=['POST'])
@@ -406,6 +513,47 @@ def varify_otp():
         print('error while verify otp')
         return server_error_handler()
 
+  
+## ABDO 
+
+### create new sell order 
+## needs jwt and public_id order_data
+@app.route('/sell_order', methods=['POST'])
+def sell_order():
+    try:
+        body = request.get_json()        
+        ## if there is no validation and sell order data
+        if not is_valid_jwt_body(body) or not  SellCategorymatrial.is_valid_request_data(body):        
+            return bad_request_handler()
+        
+        ## CHECK IF LOGIN OR NOT
+        # get customer data where public_id = comming public_id
+        customer = Customer.query.filter_by( public_id = int( body.get('public_id') ) ).first()
+        # jwt validation
+        if  not customer or not  is_valid_jwt(app, body.get('jwt'), customer.email):
+            return unauthorized_user_handler()
+
+        body  = body.get('sell_data')# get sell order data
+        
+        ## get km points 
+        ## store 
+        category_matrial = MatrialCategory.query.filter_by(matrial_id=body.get('matrial_id'), category_id=body.get('category_id')).first()        
+        points = float(body.get('weight')) * category_matrial.km_points
+        
+        ## select dellivery for order
+        selected_delivery = Delivery.query.filter_by(zone_id=int(body.get('zone_id'))).first()
+    
+        ## add sell order to database        
+        ## INSERT
+        sell_category_matrial = SellCategorymatrial(matrial_id=int(body.get('matrial_id')), category_id=int(body.get('category_id')) , delivery_id=selected_delivery.id, customer_id=customer.id, date=body.get('date'), time=body.get('time'), weight=float(body.get('weight')), points=points, done=False)
+        sell_category_matrial.add()
+    
+        return success_request_handler()
+    except:
+        db.session.rollback()
+        print('error while creating new sell order')
+        return server_error_handler()
+
 
 # get matrials from database 
 # return matrials
@@ -417,12 +565,14 @@ def get_matrial():
             
         # convert into json 
         # return json 
-        return Matrial.get_json_matrials(matrials)            
+        return Matrial.get_json_matrials(matrials)  
+              
     except: # catch errors
         print('error geting matrials')
         return server_error_handler()
   
-
+  
+  
 @app.route('/categories', methods=['GET'])
 def get_categories():
     try:        
@@ -431,18 +581,18 @@ def get_categories():
       
         # convert into json 
         # return json 
-        
         return Category.get_json_categories(categories)
         
     except: # catch errors
         print('error while getting categories')
         return server_error_handler
         
+        
+ 
 @app.route('/zones')
 def get_zones():
     try:
-        zones = Zone.query.all()
-        print('zones: ', Zone.get_json_zones(zones))
+        zones = Zone.query.all() 
         return Zone.get_json_zones(zones)
     except:
         return server_error_handler()

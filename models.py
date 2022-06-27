@@ -44,15 +44,6 @@ class Customer_OTP(db.Model):
     def is_valid_otp_request_data(body):
         return body != None and 'email' in body and 'otp' in body 
 
-'''
-Integer             --> 1, 2, 3
-number-Float        --> 1.5 - 1.7 - .9
-
-varchar - string    --> 'moham12ed'
-char                --> 'c' , '2'
-boolean             --> True - False
-
-'''
 
 class Admin(db.Model):    
     ## fields
@@ -63,7 +54,6 @@ class Admin(db.Model):
 '''
 Integer             --> 1, 2, 3
 number-Float        --> 1.5 - 1.7 - .9
-
 varchar - string    --> 'moham12ed'
 char                --> 'c' , '2'
 boolean             --> True - False
@@ -74,7 +64,7 @@ class Customer(db.Model):
     ## fields
     # outo increment    
     id = Column(Integer, primary_key=True) 
-    public_id = Column(Integer) # outo increment        
+    public_id = Column(Integer) # outo increment
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)    
     email = Column(String, nullable=False)
