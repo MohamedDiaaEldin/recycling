@@ -44,29 +44,49 @@ class Customer_OTP(db.Model):
     def is_valid_otp_request_data(body):
         return body != None and 'email' in body and 'otp' in body 
 
+'''
+Integer             --> 1, 2, 3
+number-Float        --> 1.5 - 1.7 - .9
+
+varchar - string    --> 'moham12ed'
+char                --> 'c' , '2'
+boolean             --> True - False
+
+'''
+
 class Admin(db.Model):    
     ## fields
     id = Column(Integer, primary_key=True) # outo increment        
     email = Column(String, nullable=False)
     password = Column(String, nullable=False)
     
-    
+'''
+Integer             --> 1, 2, 3
+number-Float        --> 1.5 - 1.7 - .9
 
+varchar - string    --> 'moham12ed'
+char                --> 'c' , '2'
+boolean             --> True - False
+
+'''
 class Customer(db.Model):
     __tablename__ = 'customer'
     ## fields
-    id = Column(Integer, primary_key=True) # outo increment    
-    public_id = Column(Integer) # outo increment    
+    # outo increment    
+    id = Column(Integer, primary_key=True) 
+    public_id = Column(Integer) # outo increment        
     first_name = Column(String, nullable=False)
-    last_name = Column(String, nullable=False)
+    last_name = Column(String, nullable=False)    
     email = Column(String, nullable=False)
-    password = Column(String, nullable=False)
+    password = Column(String, nullable=False)    
     address = Column(String, nullable=False)
     phone = Column(String, nullable=False)
-    points = Column(Float, nullable=False)    
+    points = Column(Float, nullable=False)  ## 1.5 - .5    
+    
     waiting = relationship("WaitingCategory")
     
-
+    def commit(self):
+        db.session.commit()
     @staticmethod
     def is_email_there(email):
         ## check if user is signed up before 
@@ -100,10 +120,8 @@ class WaitingCategory(db.Model):
     def add(self):
         add(self)
 
-'''
-NOTE  change to many  Deto many between SellOrder andlivery 
-'''
 
+# 
 class Zone(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
@@ -150,7 +168,6 @@ class Delivery(db.Model):
 
     def add(self):
         add(self)
-
 
 
 class Category(db.Model):
@@ -221,7 +238,7 @@ class MatrialCategory(db.Model):
     def add(self):
         add(self)
 
-    def update(self):
+    def commit(self):
         db.session.commit()
     delivery_id = Column(Integer, ForeignKey('delivery.id'))
     delivery_id = Column(Integer, ForeignKey('delivery.id'))
@@ -302,6 +319,8 @@ class SellCategorymatrial(db.Model):
 
     def add(self):
         add(self)
+    def commit(self):
+        db.session.commit()
 
 
 ## for autoincrment 
