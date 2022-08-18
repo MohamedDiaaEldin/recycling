@@ -8,6 +8,7 @@
 
 
 # Backend
+## [new backend version](https://pages.github.com/)
 
   - ## tools 
     - Flask - SqlAlchemy - flask migrate
@@ -19,8 +20,3 @@
      $ export FLASK_APP=main
      $ flask run 
     </pre>
-
-
-## suggestion - next step  
--  JWT implementation needs update since it call database every time 
--  update backend with MVC pattern 
