@@ -7,6 +7,8 @@ Bikya is a web application designed to address the issue of material waste. It a
 Bikya aims to streamline waste collection by providing a platform where users can schedule and manage waste pickup conveniently.
 
 ## Features
+### App Demo
+[![Video](./data/bikya.png)](https://www.youtube.com/watch?v=VwsEV81xSDU)
 
 - **User Portal:**
   - Select material type for disposal.
