@@ -1,5 +1,5 @@
 
-from main import MatrialCategory, Category, Matrial, db
+from main import app,  MatrialCategory, Category, Matrial, db
 
 '''
  materials 
@@ -24,9 +24,10 @@ matrials = [ {'id':1 , 'km_price':20, 'km_points':5},
 
 categories = [1, 2, 3, 4, 5, 6]
 
-for matrial in matrials:  
-    for i in range(1, 7):
-        category_matrial = MatrialCategory(matrial_id=matrial['id'], category_id=i, total_weight=100, km_price=matrial['km_price'] , km_points=matrial['km_points'])
-        category_matrial.add()
+with app.app_context():
+  for matrial in matrials:  
+      for i in range(1, 7):
+          category_matrial = MatrialCategory(matrial_id=matrial['id'], category_id=i, total_weight=100, km_price=matrial['km_price'] , km_points=matrial['km_points'])
+          category_matrial.add()
     
 

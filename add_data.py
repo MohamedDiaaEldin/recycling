@@ -1,5 +1,5 @@
 import csv
-from main import Matrial, Category, Delivery, Zone
+from main import app, Matrial, Category, Delivery, Zone
 
 def add_material(matrials):
     for material in matrials:
@@ -26,20 +26,22 @@ def add_delivery():
     ## third deleivey 
     delivery = Delivery(name='Mohaned',  phone = '0127222222', email='mohaned@bikya.com', password="mohaned123", zone_id=3)
     delivery.add()
-    
-with open('data/material.csv') as csv_file:
-    csv_reader = csv.reader(csv_file, delimiter=',')
-    line_count = 0
-    for row in csv_reader:
-        print(row)
-        # matrial 
-        if line_count == 0:
-            add_material(row)                        
-        elif line_count == 1:
-            add_category(row)                    
-        elif line_count == 2:
-            add_zones(row)
-        line_count += 1
-    print(f'Processed {line_count} lines.')
 
-add_delivery()
+
+with app.app_context() :
+    with open('data/material.csv') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        line_count = 0
+        for row in csv_reader:
+            print(row)
+            # matrial 
+            if line_count == 0:
+                add_material(row)                        
+            elif line_count == 1:
+                add_category(row)                    
+            elif line_count == 2:
+                add_zones(row)
+            line_count += 1
+        print(f'Processed {line_count} lines.')
+
+    add_delivery()

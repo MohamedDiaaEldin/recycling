@@ -446,7 +446,7 @@ def otp():
     try:            
         body = request.get_json() 
         # request body validation 
-    
+
         if not Customer_OTP.is_valid_request_data(body):
             return bad_request_handler()        
         email = body.get('email')
@@ -525,7 +525,7 @@ def sell_order():
         ## if there is no validation and sell order data
         if not is_valid_jwt_body(body) or not  SellCategorymatrial.is_valid_request_data(body):        
             return bad_request_handler()
-        
+
         ## CHECK IF LOGIN OR NOT
         # get customer data where public_id = comming public_id
         customer = Customer.query.filter_by( public_id = int( body.get('public_id') ) ).first()
@@ -534,20 +534,20 @@ def sell_order():
             return unauthorized_user_handler()
 
         body  = body.get('sell_data')# get sell order data
-        
+
         ## get km points 
         ## store 
         category_matrial = MatrialCategory.query.filter_by(matrial_id=body.get('matrial_id'), category_id=body.get('category_id')).first()        
         points = float(body.get('weight')) * category_matrial.km_points
-        
+
         ## select dellivery for order
         selected_delivery = Delivery.query.filter_by(zone_id=int(body.get('zone_id'))).first()
-    
+
         ## add sell order to database        
         ## INSERT
         sell_category_matrial = SellCategorymatrial(matrial_id=int(body.get('matrial_id')), category_id=int(body.get('category_id')) , delivery_id=selected_delivery.id, customer_id=customer.id, date=body.get('date'), time=body.get('time'), weight=float(body.get('weight')), points=points, done=False)
         sell_category_matrial.add()
-    
+
         return success_request_handler()
     except:
         db.session.rollback()
@@ -703,27 +703,27 @@ def confirm_buy():
 ## sigin up
 @app.route('/customer', methods=['POST'])
 def add_customer():        
-    try:
-        # validate json request  formate 
-        body = request.get_json()
-        if not Customer.is_valid_customer_data(body) :
-            return bad_request_handler()
+    # try:
+    # validate json request  formate 
+    body = request.get_json()
+    if not Customer.is_valid_customer_data(body) :
+        return bad_request_handler()
 
-        ## create new customer 
-        public_id = PublicIdAuto.query.all()[0]        
-        ## INSERT        
-        new_customer = Customer(first_name=body.get('first_name'),last_name=body.get('last_name'), email=body.get('email'), password=body.get('password'), address=body.get('address'),phone=body.get('phone'), points=0.0, public_id=public_id.id+1)
-        ## update public_id 
-        public_id.id = public_id.id + 1
-        # add to database
-        new_customer.add()
+    ## create new customer 
+    public_id = PublicIdAuto.query.all()[0]        
+    ## INSERT        
+    new_customer = Customer(first_name=body.get('first_name'),last_name=body.get('last_name'), email=body.get('email'), password=body.get('password'), address=body.get('address'),phone=body.get('phone'), points=0.0, public_id=public_id.id+1)
+    ## update public_id 
+    public_id.id = public_id.id + 1
+    # add to database
+    new_customer.add()
 
-        return success_request_handler()
-        
-    except:        
-        db.session.rollback()
-        print('error while adding new customer')
-        return server_error_handler()
+    return success_request_handler()
+    
+    # except:        
+    #     db.session.rollback()
+    #     print('error while adding new customer')
+    #     return server_error_handler()
 
         
 ## get email and password
