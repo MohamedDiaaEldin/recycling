@@ -12,6 +12,8 @@ Bikya aims to streamline waste collection by providing a platform where users ca
 ### App Demo
 https://github.com/MohamedDiaaEldin/recycling/assets/72948823/a921549b-3a8a-4948-8bd3-64dfbe6a4779
 
+### Check it out
+[mdiaa.pythonanywhere.com/](https://mdiaa.pythonanywhere.com/static/index.html)
 
 - **User Portal:**
   - Select material type for disposal.
